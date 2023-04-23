@@ -27,3 +27,137 @@ VisualGLM-6B 由 [SwissArmyTransformer](https://github.com/THUDM/SwissArmyTransf
 <!--  为了方便下游开发者针对自己的应用场景定制模型，我们同时实现了基于 [P-Tuning v2](https://github.com/THUDM/P-tuning-v2) 的高效参数微调方法 [(使用指南)](ptuning/README.md) ，INT4 量化级别下最低只需 7GB 显存即可启动微调。
  -->
 *Read this in [English](README_en.md). TODO*
+
+## 样例
+TODO 这里用图片的形式展示3-4个样例（web demo界面），尽量合成一个图，不要太长。
+
+## 使用
+
+### 模型推理
+
+使用pip安装依赖
+```
+pip install -r requirements.txt
+```
+
+如果使用Huggingface transformers库调用模型，可以通过如下代码（其中图像路径为本地路径）：
+```python
+TODO
+>>> from transformers import AutoTokenizer, AutoModel
+>>> tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True)
+>>> model = AutoModel.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True).half().cuda()
+>>> model = model.eval()
+>>> response, history = model.chat(tokenizer, "你好", history=[])
+>>> print(response)
+你好👋!我是人工智能助手 ChatGLM-6B,很高兴见到你,欢迎问我任何问题。
+>>> response, history = model.chat(tokenizer, "晚上睡不着应该怎么办", history=history)
+>>> print(response)
+晚上睡不着可能会让你感到焦虑或不舒服,但以下是一些可以帮助你入睡的方法:
+```
+
+如果使用SwissArmyTransformer库调用模型，方法类似。具体代码如下：
+```python
+TODO
+>>> from transformers import AutoTokenizer, AutoModel
+>>> tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True)
+>>> model = AutoModel.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True).half().cuda()
+>>> model = model.eval()
+>>> response, history = model.chat(tokenizer, "你好", history=[])
+>>> print(response)
+你好👋!我是人工智能助手 ChatGLM-6B,很高兴见到你,欢迎问我任何问题。
+>>> response, history = model.chat(tokenizer, "晚上睡不着应该怎么办", history=history)
+>>> print(response)
+晚上睡不着可能会让你感到焦虑或不舒服,但以下是一些可以帮助你入睡的方法:
+```
+### 高效微调
+本项目提供了基于`sat`库进行参数高效微调的例子，该方法在半精度下需要TODO G显存。
+
+TODO 具体代码
+
+### 加载本地模型
+
+对于通过`sat`训练得到的模型，可以通过如下方法加载。
+
+TODO 具体代码
+
+主要不同是 TODO。
+
+## Demo & API
+
+我们提供了一个基于 [Gradio](https://gradio.app) 的网页版 Demo 和一个命令行 Demo。使用时首先需要下载本仓库：
+
+```shell
+git clone https://github.com/THUDM/VisualGLM-6B
+cd VisualGLM-6B
+```
+
+#### 网页版 Demo
+
+![web-demo](resources/web-demo.gif)
+
+首先安装 Gradio：`pip install gradio`，然后运行仓库中的 [web_demo.py](web_demo.py)： 
+
+```shell
+python web_demo.py
+```
+
+程序会运行一个 Web Server，并输出地址。在浏览器中打开输出的地址即可使用。最新版 Demo 实现了打字机效果，速度体验大大提升。注意，由于国内 Gradio 的网络访问较为缓慢，启用 `demo.queue().launch(share=True, inbrowser=True)` 时所有网络会经过 Gradio 服务器转发，导致打字机体验大幅下降，现在默认启动方式已经改为 `share=False`，如有需要公网访问的需求，可以重新修改为 `share=True` 启动。
+
+#### 命令行 Demo
+
+![cli-demo](resources/cli-demo.png)
+
+运行仓库中 [cli_demo.py](cli_demo.py)：
+
+```shell
+python cli_demo.py
+```
+
+程序会在命令行中进行交互式的对话，在命令行中输入指示并回车即可生成回复，输入 `clear` 可以清空对话历史，输入 `stop` 终止程序。
+
+### API部署
+首先需要安装额外的依赖 `pip install fastapi uvicorn`，然后运行仓库中的 [api.py](api.py)：
+```shell
+python api.py
+```
+默认部署在本地的 8000 端口，通过 POST 方法进行调用
+```shell
+curl -X POST "http://127.0.0.1:8000" \
+     -H 'Content-Type: application/json' \
+     -d '{"prompt": "你好", "history": []}'
+```
+得到的返回值为
+```shell
+{
+  "response":"你好👋！我是人工智能助手 ChatGLM-6B，很高兴见到你，欢迎问我任何问题。",
+  "history":[["你好","你好👋！我是人工智能助手 ChatGLM-6B，很高兴见到你，欢迎问我任何问题。"]],
+  "status":200,
+  "time":"2023-03-23 21:38:40"
+}
+```
+
+## 局限性
+
+- 图像描述事实性/模型幻觉问题。在生成图像长描述的时候，距离图像较远时，语言模型的将占主导，有一定可能根据上下文生成并不存在于图像的内容。
+
+## 协议
+
+## 引用
+```
+@inproceedings{du2022glm,
+  title={GLM: General Language Model Pretraining with Autoregressive Blank Infilling},
+  author={Du, Zhengxiao and Qian, Yujie and Liu, Xiao and Ding, Ming and Qiu, Jiezhong and Yang, Zhilin and Tang, Jie},
+  booktitle={Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  pages={320--335},
+  year={2022}
+}
+@article{ding2021cogview,
+  title={Cogview: Mastering text-to-image generation via transformers},
+  author={Ding, Ming and Yang, Zhuoyi and Hong, Wenyi and Zheng, Wendi and Zhou, Chang and Yin, Da and Lin, Junyang and Zou, Xu and Shao, Zhou and Yang, Hongxia and others},
+  journal={Advances in Neural Information Processing Systems},
+  volume={34},
+  pages={19822--19835},
+  year={2021}
+}
+```
+
