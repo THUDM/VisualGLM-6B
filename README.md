@@ -6,6 +6,9 @@
 <p align="center">
     👋 加入我们的 <a href="https://join.slack.com/t/chatglm/shared_invite/zt-1th2q5u69-7tURzFuOPanmuHy9hsZnKA" target="_blank">Slack</a> 和 <a href="resources/WECHAT.md" target="_blank">WeChat</a>
 </p>
+<p align="center">
+🤖VisualGLM-6B在线演示网站 TODO！
+</p>
 
 ## 介绍
 
