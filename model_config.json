@@ -1,0 +1,71 @@
+{
+    "model_class": "VisualGLMModel",
+    "tokenizer_type": "THUDM/chatglm-6b",
+    "num_layers": 28,
+    "hidden_size": 4096,
+    "num_attention_heads": 32,
+    "vocab_size": 130528,
+    "layernorm_order": "post",
+    "model_parallel_size": 1,
+    "max_sequence_length": 2048,
+    "pre_seq_len": 128,
+    "bos_token_id": 130004,
+    "mask_token_id": 130000,
+    "gmask_token_id": 130001,
+    "image_size": [
+        224,
+        224
+    ],
+    "pre_len": 1,
+    "post_len": 0,
+    "in_channels": 3,
+    "patch_size": 14,
+    "image_length": 32,
+
+"eva_args": {
+        "num_layers": 39,
+        "hidden_size": 1408,
+        "num_attention_heads": 16,
+        "vocab_size": 1,
+        "layernorm_order": "pre",
+        "model_parallel_size": 1,
+        "max_sequence_length": 257,
+        "inner_hidden_size": 6144,
+        "use_final_layernorm": false,
+        "layernorm_epsilon": 1e-06,
+        "image_size": [
+            224,
+            224
+        ],
+        "pre_len": 1,
+        "post_len": 0,
+        "in_channels": 3,
+        "num_classes": 0,
+        "patch_size": 14
+    },
+"qformer_args": {
+        "num_layers": 12,
+        "hidden_size": 768,
+        "num_attention_heads": 12,
+        "vocab_size": 32,
+        "layernorm_order": "post",
+        "model_parallel_size": 1,
+        "max_sequence_length": 0,
+        "is_decoder": [
+            true,
+            false,
+            true,
+            false,
+            true,
+            false,
+            true,
+            false,
+            true,
+            false,
+            true,
+            false
+        ],
+        "cross_attn_hidden_size": 1408,
+        "layernorm_epsilon": 1e-12
+    }
+}
