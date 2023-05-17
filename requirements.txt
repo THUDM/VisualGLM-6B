@@ -1,0 +1,4 @@
+SwissArmyTransformer
+torch==1.31.1
+torchvision==0.14.1
+transformers==4.28.1

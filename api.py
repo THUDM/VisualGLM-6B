@@ -2,7 +2,7 @@ import os
 import json
 import uvicorn
 from fastapi import FastAPI, Request
-from model import get_para, get_infer_setting, generate_input, get_para, chat
+from model import is_chinese, get_infer_setting, generate_input, chat
 import datetime
 
 gpu_number = 0
@@ -19,23 +19,23 @@ async def visual_glm(request: Request):
     request_data = json.loads(json_post)
     input_text, input_image_encoded, history = request_data['text'], request_data['image_prompt'], request_data['history']
     input_para = {
-        "max_length": 512,
+        "max_length": 2048,
         "min_length": 50,
-        "num_beams": 5,
-        "temperature": 0.95,
-        "top_p": 0.7,
-        "repetition_penalty": 2.0,
-        "length_penalty": 1.0,
-        "early_stopping": True
+        "num_beams": 1,
+        "temperature": 0.8,
+        "top_p": 0.4,
+        "top_k": 100,
+        "repetition_penalty": 1.2
     }
     input_para.update(request_data)
 
+    is_zh = is_chinese(input_text)
     input_data = generate_input(input_text, input_image_encoded, history, input_para)
     input_image, gen_kwargs =  input_data['input_image'], input_data['gen_kwargs']
-    max_length, num_beams, top_p, temperature = get_para(gen_kwargs)
-    answer, history = chat(None, model, tokenizer, input_text, history=history, image=input_image, \
-                                     max_length=max_length, num_beams=num_beams, top_p=top_p, temperature=temperature)
-    
+    answer, history, _ = chat(None, model, tokenizer, input_text, history=history, image=input_image, \
+                            max_length=gen_kwargs['max_length'], num_beams=gen_kwargs['num_beams'], top_p=gen_kwargs['top_p'], \
+                            top_k = gen_kwargs['top_k'], temperature=gen_kwargs['temperature'], english=not is_zh)
+        
     now = datetime.datetime.now()
     time = now.strftime("%Y-%m-%d %H:%M:%S")
     answer = {

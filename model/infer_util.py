@@ -8,49 +8,24 @@ import torch
 from transformers import AutoTokenizer
 import deepspeed
 from sat.model.mixins import CachedAutoregressiveMixin
-from sat import get_tokenizer
+from sat import get_tokenizer, get_args
 
 from .visualglm import VisualGLMModel
 
 
 def get_default_args():
-    args = argparse.Namespace(
-        force_inference=True,
-        inner_hidden_size=None,
-        hidden_size_per_attention_head=None,
-        checkpoint_activations=True,
-        checkpoint_num_layers=1,
-        layernorm_order='pre',
-        model_parallel_size=1,
-        world_size=1,
-        rank=0,
-        skip_init=True,
-        use_gpu_initialization=True,
-        deepspeed=None,
-        mode='inference',
+    args=argparse.Namespace(
         fp16=True,
-        local_rank=0,
-        pretrain=False        
-    )
-    args.image_length = 32
-    args.ptuning_on_chatglm = False
-    args.lora_on_chatglm = True
-    args.lora_on_eva2 = False
-    args.full_finetune_eva2 = False
-    args.tune_norm_bias_chatglm = False
-    args.tune_norm_bias_eva2 = False
-    args.eva2 = False
-    args.eva_clip_vit_lora = True
-    args.eva_clip_qformer_lora = False
-    args.itc = False   
+        skip_init=True)
     return args 
 
 
-def set_default_dist(args, rank):
+def set_default_dist(args, rank, start_port=18000):
     init_method = 'tcp://'
     master_ip = os.getenv('MASTER_ADDR', '127.0.0.1')
-    master_port = os.getenv('MASTER_PORT', str(17000 + rank))
+    master_port = os.getenv('MASTER_PORT', str(start_port + rank))
     init_method += master_ip + ':' + master_port
+    args.world_size, args.rank = 1, 0
     torch.distributed.init_process_group(
             backend='nccl',
             world_size=args.world_size, rank=args.rank, init_method=init_method)
@@ -59,16 +34,26 @@ def set_default_dist(args, rank):
             world_size=args.world_size, rank=args.rank, init_method=init_method)
 
 
-def get_infer_setting(gpu_device):
-    args = get_default_args()
+def get_infer_setting(gpu_device=0):
     os.environ['CUDA_VISIBLE_DEVICES'] = str(gpu_device)
-    set_default_dist(args, 0)
+    args = get_default_args()
     model, args = VisualGLMModel.from_pretrained('visualglm-6b', args)
     model.add_mixin('auto-regressive', CachedAutoregressiveMixin())
     model.eval()
     tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True, local_files_only=True)
     tokenizer = get_tokenizer(outer_tokenizer=tokenizer)
-    return model, tokenizer
+    return model, tokenizer   
+
+
+# for distributed infer
+def get_infer_setting2(gpu_device):
+    args = get_default_args()
+    os.environ['CUDA_VISIBLE_DEVICES'] = str(gpu_device)
+    set_default_dist(args, gpu_device, 17000)
+    model, args = VisualGLMModel.from_pretrained('visualglm-6b', args)
+    model.add_mixin('auto-regressive', CachedAutoregressiveMixin())
+    model.eval()
+    return model    
 
 
 def is_chinese(text):
@@ -84,8 +69,3 @@ def generate_input(input_text, input_image_prompt, history=[], input_para=None, 
 
     input_data = {'input_query': input_text, 'input_image': image, 'history': history, 'gen_kwargs': input_para}
     return input_data
-
-
-def get_para(input_para=None):
-    max_length, num_beams, top_p, temperature = input_para.get('max_length', 512), input_para.get('num_beams', 5), input_para.get('top_p', 0.7), input_para.get('temperature', 0.95)
-    return max_length, num_beams, top_p, temperature
