@@ -18,7 +18,7 @@ def main():
     parser.add_argument("--top_k", type=int, default=100)
     parser.add_argument("--temperature", type=float, default=.8)
     parser.add_argument("--english", action='store_true')
-    parser.add_argument("--quant", choices=[8, 4], default=None)
+    parser.add_argument("--quant", choices=[8, 4], type=int, default=None)
     args = parser.parse_args()
 
     # load model
