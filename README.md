@@ -7,14 +7,14 @@
     👋 加入我们的 <a href="https://join.slack.com/t/chatglm/shared_invite/zt-1th2q5u69-7tURzFuOPanmuHy9hsZnKA" target="_blank">Slack</a> 和 <a href="resources/WECHAT.md" target="_blank">WeChat</a>
 </p>
 <p align="center">
-🤖 <a href="https://huggingface.co/spaces/lykeven/visualglm-6b" target="_blank">VisualGLM-6B在线演示网站</a>
+🤖<a href="https://huggingface.co/spaces/lykeven/visualglm-6b" target="_blank">VisualGLM-6B在线演示网站</a>
 </p>
 
 ## 介绍
 
 VisualGLM-6B 是一个开源的，支持**图像、中文和英文**的多模态对话语言模型，语言模型基于 [ChatGLM-6B](https://github.com/THUDM/ChatGLM-6B)，具有 62 亿参数；图像部分通过训练 [BLIP2-Qformer](https://arxiv.org/abs/2301.12597) 构建起视觉模型与语言模型的桥梁，整体模型共78亿参数。
 
-VisualGLM-6B 依靠来自于 [CogView](https://arxiv.org/abs/2105.13290) 数据集的30M高质量中文图文对，与500M经过筛选的英文图文对进行预训练，中英文权重相同。该训练方式较好地将视觉信息对齐到ChatGLM的语义空间；之后的微调阶段，模型在长视觉问答数据上训练，以生成符合人类偏好的答案。
+VisualGLM-6B 依靠来自于 [CogView](https://arxiv.org/abs/2105.13290) 数据集的30M高质量中文图文对，与300M经过筛选的英文图文对进行预训练，中英文权重相同。该训练方式较好地将视觉信息对齐到ChatGLM的语义空间；之后的微调阶段，模型在长视觉问答数据上训练，以生成符合人类偏好的答案。
 
 VisualGLM-6B 由 [SwissArmyTransformer](https://github.com/THUDM/SwissArmyTransformer)(`sat`) 库训练，这是一个支持Transformer灵活修改、训练的工具库，支持Lora、P-tuning等参数高效微调方法。本项目提供了符合用户习惯的huggingface接口，也提供了基于sat的[训练样例(TODO)]()。
 
@@ -29,7 +29,8 @@ VisualGLM-6B 由 [SwissArmyTransformer](https://github.com/THUDM/SwissArmyTransf
 *Read this in [English](README_en.md). TODO*
 
 ## 样例
-TODO 这里用图片的形式展示3-4个样例（web demo界面），尽量合成一个图，不要太长。
+
+![样例](examples/chat_example.jpg)
 
 ## 使用
 
@@ -84,7 +85,7 @@ TODO 具体代码
 
 ## Demo & API
 
-我们提供了一个基于 [Gradio](https://gradio.app) 的网页版 Demo 和一个命令行 Demo。使用时首先需要下载本仓库：
+我们提供了一个基于 [Gradio](https://gradio.app) 的网页版 Demo，使用时首先需要下载本仓库：
 
 ```shell
 git clone https://github.com/THUDM/VisualGLM-6B
@@ -93,7 +94,7 @@ cd VisualGLM-6B
 
 #### 网页版 Demo
 
-![web-demo](resources/web-demo.gif)
+![web_demo](examples/web_demo.png)
 
 首先安装 Gradio：`pip install gradio`，然后运行仓库中的 [web_demo.py](web_demo.py)： 
 
@@ -101,38 +102,38 @@ cd VisualGLM-6B
 python web_demo.py
 ```
 
-程序会运行一个 Web Server，并输出地址。在浏览器中打开输出的地址即可使用。最新版 Demo 实现了打字机效果，速度体验大大提升。注意，由于国内 Gradio 的网络访问较为缓慢，启用 `demo.queue().launch(share=True, inbrowser=True)` 时所有网络会经过 Gradio 服务器转发，导致打字机体验大幅下降，现在默认启动方式已经改为 `share=False`，如有需要公网访问的需求，可以重新修改为 `share=True` 启动。
+程序会运行一个 Web Server，并输出地址。在浏览器中打开输出的地址即可使用。
+
 
 #### 命令行 Demo
 
-![cli-demo](resources/cli-demo.png)
-
-运行仓库中 [cli_demo.py](cli_demo.py)：
+![cli_demo](examples/cli_demo.png)
 
 ```shell
 python cli_demo.py
 ```
 
-程序会在命令行中进行交互式的对话，在命令行中输入指示并回车即可生成回复，输入 `clear` 可以清空对话历史，输入 `stop` 终止程序。
+程序会在命令行中进行交互式的对话，在命令行中输入指示并回车即可生成回复，输入 clear 可以清空对话历史，输入 stop 终止程序。
+
 
 ### API部署
 首先需要安装额外的依赖 `pip install fastapi uvicorn`，然后运行仓库中的 [api.py](api.py)：
 ```shell
 python api.py
 ```
-默认部署在本地的 8000 端口，通过 POST 方法进行调用
+默认部署在本地的 8080 端口，通过 POST 方法进行调用。
 ```shell
-curl -X POST "http://127.0.0.1:8000" \
+curl -X POST "http://127.0.0.1:8080" \
      -H 'Content-Type: application/json' \
-     -d '{"prompt": "你好", "history": []}'
+     -d '{"text": "描述这张图片", "history": [], "image_prompt": "Base64 encoded bytes of examples/2.jpeg"}'
 ```
 得到的返回值为
 ```shell
 {
-  "response":"你好👋！我是人工智能助手 ChatGLM-6B，很高兴见到你，欢迎问我任何问题。",
-  "history":[["你好","你好👋！我是人工智能助手 ChatGLM-6B，很高兴见到你，欢迎问我任何问题。"]],
+  "response":"这张图片展现了一只可爱的卡通羊驼，它站在一个透明的背景上。这只羊驼长着一张毛茸茸的耳朵和一双大大的眼睛，它的身体是白色的，带有棕色斑点。",
+  "history":[('描述这张图片', '这张图片展现了一只可爱的卡通羊驼，它站在一个透明的背景上。这只羊驼长着一张毛茸茸的耳朵和一双大大的眼睛，它的身体是白色的，带有棕色斑点。')],
   "status":200,
-  "time":"2023-03-23 21:38:40"
+  "time":"2023-05-16 20:20:10"
 }
 ```
 
