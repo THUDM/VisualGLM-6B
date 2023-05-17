@@ -8,11 +8,6 @@ from copy import deepcopy
 from torchvision import transforms
 from torchvision.transforms.functional import InterpolationMode
 
-from sat.resources.urls import MODEL_URLS
-
-MODEL_URLS['eva_clip_g'] = 'https://cloud.tsinghua.edu.cn/f/eaecf72684fa44518737/?dl=1'
-MODEL_URLS['qformer'] = 'https://cloud.tsinghua.edu.cn/f/585e031f64dd461682ad/?dl=1'
-
 class LNFinalyMixin(BaseMixin):
     def __init__(self, hidden_size):
         super().__init__()

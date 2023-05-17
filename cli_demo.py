@@ -6,38 +6,34 @@ import torch
 import argparse
 from transformers import AutoTokenizer
 from sat.model.mixins import CachedAutoregressiveMixin
+from sat.quantization.kernels import quantize
+
 from model import VisualGLMModel, chat
 
 
 def main():
-    import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("--max_length", type=int, default=2048)
-    parser.add_argument("--num_beams", type=int, default=10)
     parser.add_argument("--top_p", type=float, default=0.4)
     parser.add_argument("--top_k", type=int, default=100)
     parser.add_argument("--temperature", type=float, default=.8)
     parser.add_argument("--english", action='store_true')
-    parser.add_argument("--checkpoint_url", default="https://cloud.tsinghua.edu.cn/f/1e4ec905a4ee4561a1fa/")
-    parser.add_argument("--gpu", default="0")
+    parser.add_argument("--quant", choices=['int8', 'int4'], default=None)
     args = parser.parse_args()
 
-    os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
     # load model
     model, model_args = VisualGLMModel.from_pretrained(
-        args.checkpoint_url,
+        'visualglm-6b-v0',
         args=argparse.Namespace(
         fp16=True,
         skip_init=True,
-        use_gpu_initialization=True,
-        # device='cpu'
-    ))
+        use_gpu_initialization=True if torch.cuda.is_available() else False,
+        device='cuda' if torch.cuda.is_available() else 'cpu',
+    )).eval()
 
-    # %%
-    from sat.quantization.kernels import quantize
-    quantize(model.transformer, 8)
+    if args.quant:
+        quantize(model.transformer, args.quant)
 
-    model = model.cuda().eval()
     model.add_mixin('auto-regressive', CachedAutoregressiveMixin())
 
     tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True, local_files_only=True)
@@ -69,8 +65,20 @@ def main():
                 if query == "stop":
                     sys.exit(0)
                 try:
-                    response, history, cache_image = chat(image_path, model, tokenizer, query, history=history, image=cache_image,max_length=args.max_length, num_beams=args.num_beams, top_p=args.top_p, temperature=args.temperature, top_k=args.top_k, english=args.english,
-                    invalid_slices=[slice(63823, 130000)] if args.english else [])
+                    response, history, cache_image = chat(
+                        image_path, 
+                        model, 
+                        tokenizer,
+                        query, 
+                        history=history, 
+                        image=cache_image, 
+                        max_length=args.max_length, 
+                        top_p=args.top_p, 
+                        temperature=args.temperature,
+                        top_k=args.top_k,
+                        english=args.english,
+                        invalid_slices=[slice(63823, 130000)] if args.english else []
+                        )
                 except Exception as e:
                     print(e)
                     break

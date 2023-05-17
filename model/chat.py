@@ -7,7 +7,6 @@
 '''
 
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '6'
 import sys
 import re
 from functools import partial
@@ -17,10 +16,7 @@ from PIL import Image
 from io import BytesIO
 
 import torch
-from transformers import AutoTokenizer
-from sat.model.mixins import CachedAutoregressiveMixin
 from sat.generation.autoregressive_sampling import filling_sequence, BaseStrategy
-from sat.generation.sampling_strategies import BeamSearchStrategy
 
 from .blip2 import BlipImageEvalProcessor
 
@@ -96,7 +92,7 @@ def process_image(text, image=None):
 
 def chat(image_path, model, tokenizer, 
         query: str, history: List[Tuple[str, str]] = None, image: Image = None,
-        max_length: int = 1024, num_beams=1, top_p=0.7, top_k=30, temperature=0.95,
+        max_length: int = 1024, top_p=0.7, top_k=30, temperature=0.95, repetition_penalty=1.2,
         invalid_slices=[], english=False
         ):
     if not history:
@@ -106,11 +102,11 @@ def chat(image_path, model, tokenizer,
     else:
         prompt = "<img></img>"
     if english:
-        for i, (old_query, response) in enumerate(history): # history removes image urls/paths, while query does not.
+        for i, (old_query, response) in enumerate(history):
             prompt += "Q:{}\nA:{}\n".format(old_query, response)
         prompt += "Q:{}\nA:".format(query)
     else:
-        for i, (old_query, response) in enumerate(history): # history removes image urls/paths, while query does not.
+        for i, (old_query, response) in enumerate(history):
             prompt += "问：{}\n答：{}\n".format(old_query, response)
         prompt += "问：{}\n答：".format(query)
     # ---------------
@@ -138,8 +134,10 @@ def chat(image_path, model, tokenizer,
         [inputs, torch.tensor([-1]*(max_length-len(inputs)), device=inputs.device)], dim=0
     )
     # ---------------
+    # from sat.generation.sampling_strategies import BeamSearchStrategy
     # strategy = BeamSearchStrategy(num_beams, length_penalty=1., prefer_min_length=5, end_tokens=[tokenizer.eos_token_id], consider_end=True, no_repeat_ngram_size=5, stop_n_iter_unchanged=30, temperature=temperature, top_p=top_p, top_k=60, repetition_penalty=1.1)
-    strategy = BaseStrategy(temperature=temperature, top_p=top_p, top_k=top_k, end_tokens=[tokenizer.eos_token_id], invalid_slices=invalid_slices, repetition_penalty=1.2)
+    strategy = BaseStrategy(temperature=temperature, top_p=top_p, top_k=top_k, end_tokens=[tokenizer.eos_token_id],
+                            invalid_slices=invalid_slices, repetition_penalty=repetition_penalty)
     output = filling_sequence(
         model, seq,
         batch_size=1,
