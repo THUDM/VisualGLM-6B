@@ -18,12 +18,12 @@ def main():
     parser.add_argument("--top_k", type=int, default=100)
     parser.add_argument("--temperature", type=float, default=.8)
     parser.add_argument("--english", action='store_true')
-    parser.add_argument("--quant", choices=['int8', 'int4'], default=None)
+    parser.add_argument("--quant", choices=[8, 4], default=None)
     args = parser.parse_args()
 
     # load model
     model, model_args = VisualGLMModel.from_pretrained(
-        'visualglm-6b-v0',
+        'visualglm-6b',
         args=argparse.Namespace(
         fp16=True,
         skip_init=True,
@@ -36,7 +36,7 @@ def main():
 
     model.add_mixin('auto-regressive', CachedAutoregressiveMixin())
 
-    tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True, local_files_only=True)
+    tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True)
     if not args.english:
         print('欢迎使用 VisualGLM-6B 模型，输入图像URL或本地路径读图，继续输入内容对话，clear 重新开始，stop 终止程序')
     else:

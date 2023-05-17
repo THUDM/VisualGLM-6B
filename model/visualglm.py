@@ -6,7 +6,7 @@ import json
 from .blip2 import BLIP2
 
 from sat.resources.urls import MODEL_URLS
-MODEL_URLS['visualglm-6b-v0'] = 'https://cloud.tsinghua.edu.cn/f/1e4ec905a4ee4561a1fa/?dl=1'
+MODEL_URLS['visualglm-6b'] = 'https://cloud.tsinghua.edu.cn/f/348b98dffcc940b6a09d/?dl=1'
 
 class ImageMixin(BaseMixin):
     def __init__(self, args):
