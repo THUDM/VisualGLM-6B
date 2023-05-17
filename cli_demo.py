@@ -13,12 +13,12 @@ from model import VisualGLMModel, chat
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--max_length", type=int, default=2048)
-    parser.add_argument("--top_p", type=float, default=0.4)
-    parser.add_argument("--top_k", type=int, default=100)
-    parser.add_argument("--temperature", type=float, default=.8)
-    parser.add_argument("--english", action='store_true')
-    parser.add_argument("--quant", choices=[8, 4], type=int, default=None)
+    parser.add_argument("--max_length", type=int, default=2048, help='max length of the total sequence')
+    parser.add_argument("--top_p", type=float, default=0.4, help='top p for nucleus sampling')
+    parser.add_argument("--top_k", type=int, default=100, help='top k for top k sampling')
+    parser.add_argument("--temperature", type=float, default=.8, help='temperature for sampling')
+    parser.add_argument("--english", action='store_true', help='only output English')
+    parser.add_argument("--quant", choices=[8, 4], type=int, default=None, help='quantization bits')
     args = parser.parse_args()
 
     # load model
@@ -87,7 +87,7 @@ def main():
                     print(e)
                     break
                 sep = 'A:' if args.english else '答：'
-                print("\nVisualGLM-6B："+response.split(sep)[-1].strip())
+                print("VisualGLM-6B："+response.split(sep)[-1].strip())
                 image_path = None
                 if not args.english:
                     query = input("用户：")

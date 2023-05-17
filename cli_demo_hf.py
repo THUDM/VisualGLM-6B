@@ -51,13 +51,16 @@ def main():
             os.system(clear_command)
             print(build_prompt(history, prefix), flush=True)
             query = input("\n用户：")
-            if query.strip() == "stop":
-                break
             if query.strip() == "clear":
-                history = []
-                os.system(clear_command)
-                print(prefix)
-                continue
+                break
+            if query.strip() == "stop":
+                stop_stream = True
+                exit(0)
+            # if query.strip() == "clear":
+            #     history = []
+            #     os.system(clear_command)
+            #     print(prefix)
+            #     continue
 
 
 if __name__ == "__main__":
