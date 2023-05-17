@@ -29,7 +29,8 @@ def main():
         skip_init=True,
         use_gpu_initialization=True if torch.cuda.is_available() else False,
         device='cuda' if torch.cuda.is_available() else 'cpu',
-    )).eval()
+    ))
+    model = model.eval()
 
     if args.quant:
         quantize(model.transformer, args.quant)
