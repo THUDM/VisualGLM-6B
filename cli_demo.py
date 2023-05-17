@@ -27,13 +27,16 @@ def main():
         args=argparse.Namespace(
         fp16=True,
         skip_init=True,
-        use_gpu_initialization=True if torch.cuda.is_available() else False,
-        device='cuda' if torch.cuda.is_available() else 'cpu',
+        use_gpu_initialization=True if (torch.cuda.is_available() and args.quant is None) else False,
+        device='cuda' if (torch.cuda.is_available() and args.quant is None) else 'cpu',
     ))
     model = model.eval()
 
     if args.quant:
         quantize(model.transformer, args.quant)
+    
+    if torch.cuda.is_available():
+        model = model.cuda()
 
     model.add_mixin('auto-regressive', CachedAutoregressiveMixin())
 
