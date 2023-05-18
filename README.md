@@ -127,6 +127,7 @@ optional arguments:
   --english             only output English
   --quant {8,4}         quantization bits
 ```
+需要注意的是，在训练时英文问答对的提示词为`Q: A:`，而中文为`问：答：`，在网页demo中采取了中文的提示，因此英文回复会差一些且夹杂中文；如果需要英文回复，请使用`cli_demo.py`中的`--english`选项。
 
 我们也提供了继承自`ChatGLM-6B`的打字机效果命令行工具，此工具使用Huggingface模型：
 ```shell
