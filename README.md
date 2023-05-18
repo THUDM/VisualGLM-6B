@@ -45,13 +45,13 @@ By integrating model quantization technology, users can deploy locally on consum
 
 ## 样例
 VisualGLM-6B 可以进行图像的描述的相关知识的问答。
-![泰坦尼克号样例](examples/chat_example1.jpg)
+![泰坦尼克号样例](examples/chat_example1.png)
 
 <details>
 <summary>也能结合常识或提出有趣的观点，点击展开/折叠更多样例</summary>
 
-![出租车熨衣服样例](examples/chat_example2.jpg)
-![蒙娜丽莎狗样例](examples/chat_example3.jpg)
+![出租车熨衣服样例](examples/chat_example2.png)
+![蒙娜丽莎狗样例](examples/chat_example3.png)
 
 </details>
 
