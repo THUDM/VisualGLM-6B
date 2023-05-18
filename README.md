@@ -127,6 +127,7 @@ optional arguments:
   --english             only output English
   --quant {8,4}         quantization bits
 ```
+需要注意的是，在训练时英文问答对的提示词为`Q: A:`，而中文为`问：答：`，在网页demo中采取了中文的提示，因此英文回复会差一些且夹杂中文；如果需要英文回复，请使用`cli_demo.py`中的`--english`选项。
 
 我们也提供了继承自`ChatGLM-6B`的打字机效果命令行工具，此工具使用Huggingface模型：
 ```shell
@@ -191,6 +192,7 @@ model = quantize(model.transformer, args.quant).cuda()
 - 图像描述事实性/模型幻觉问题。在生成图像长描述的时候，距离图像较远时，语言模型的将占主导，有一定可能根据上下文生成并不存在于图像的内容。
 - 属性错配问题。在多物体的场景中，部分物体的某些属性，经常被错误安插到其他物体上。
 - 分辨率问题。本项目使用了224*224的分辨率，也是视觉模型中最为常用的尺寸；然而为了进行更细粒度的理解，更大的分辨率和计算量是必要的。
+- 由于数据等方面原因，模型暂时不具有中文ocr的能力（英文ocr能力有一些），我们会在后续版本中增加这个能力。
 ## 协议
 
 本仓库的代码依照 [Apache-2.0](LICENSE) 协议开源，VisualGLM-6B 模型的权重的使用则需要遵循 [Model License](MODEL_LICENSE)。
