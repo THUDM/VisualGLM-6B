@@ -74,8 +74,8 @@ pip install --no-deps 'SwissArmyTransformer>=0.3.6'
 如果使用Huggingface transformers库调用模型，可以通过如下代码（其中图像路径为本地路径）：
 ```python
 from transformers import AutoTokenizer, AutoModel
-tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True)
-model = AutoModel.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True).half().cuda()
+tokenizer = AutoTokenizer.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True)
+model = AutoModel.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True).half().cuda()
 image_path = "your image path"
 response, history = model.chat(tokenizer, image_path, "描述这张图片。", history=[])
 print(response)
