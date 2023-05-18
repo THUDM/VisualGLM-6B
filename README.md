@@ -70,6 +70,10 @@ pip install -r requirements.txt
 pip install -r requirements_wo_ds.txt
 pip install --no-deps 'SwissArmyTransformer>=0.3.6'
 ```
+在Windows系统上，请将单引号替换为双引号：
+```
+pip install --no-deps "SwissArmyTransformer>=0.3.6"
+```
 
 如果使用Huggingface transformers库调用模型，可以通过如下代码（其中图像路径为本地路径）：
 ```python
