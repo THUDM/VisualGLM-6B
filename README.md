@@ -68,7 +68,7 @@ pip install -r requirements.txt
 此时默认会安装`deepspeed`库（支持`sat`库训练），此库对于模型推理并非必要，同时部分Windows环境安装此库时会遇到问题。如果想绕过`deepspeed`安装，我们可以将命令改为
 ```
 pip install -r requirements_wo_ds.txt
-pip install --no-deps 'SwissArmyTransformer>=0.3.6'
+pip install --no-deps "SwissArmyTransformer>=0.3.6"
 ```
 
 如果使用Huggingface transformers库调用模型，可以通过如下代码（其中图像路径为本地路径）：
