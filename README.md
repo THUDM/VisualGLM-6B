@@ -107,8 +107,9 @@ print(response)
 ## 模型微调
 
 多模态任务分布广、种类多，预训练往往不能面面俱到。
-这里我们提供了一个小样本微调的例子，可以解压`fewshot-data.zip`以后运行如下命令：
+这里我们提供了一个小样本微调的例子，使用20张标注图增强模型回答“背景”问题的能力。
 
+解压`fewshot-data.zip`以后运行如下命令：
 ```
 bash finetune/finetune_visualglm.sh
 ```
