@@ -102,6 +102,73 @@ print(response)
 
 请注意，`Huggingface`模型的实现位于[Huggingface的仓库](https://huggingface.co/THUDM/visualglm-6b)中，`sat`模型的实现包含于本仓库中。
 
+### 模型微调
+
+我们提供了一个小样本微调的例子，可以解压`fewshot-data.zip`以后运行如下命令：
+
+```
+bash finetune/finetune_visualglm.sh
+```
+
+训练好以后可以使用如下命令推理：
+
+```
+python cli_demo.py --from_pretrained your_checkpoint_path --prompt_zh 这张图片的背景里有什么内容？
+```
+
+<details>
+<summary>微调前后的效果对比</summary>
+
+微调前：
+
+```
+欢迎使用 VisualGLM-6B 模型，输入图像URL或本地路径读图，继续输入内容对话，clear 重新开始，stop 终止程序
+请输入图像路径或URL（回车进入纯文本对话）： fewshot-data/2p.png
+用户：这张图片的背景里有什么内容？
+VisualGLM-6B：人们总是被生活琐事所困扰，无法摆脱束缚.
+用户：clear
+请输入图像路径或URL（回车进入纯文本对话）： fewshot-data/meme.png
+用户：这张图片的背景里有什么内容？
+VisualGLM-6B：这张图片的背景是一张狗的图片，它躺在木地板上。
+用户：clear
+请输入图像路径或URL（回车进入纯文本对话）： fewshot-data/passport.png
+用户：这张图片的背景里有什么内容？
+VisualGLM-6B：这张图片的背景是一台电脑键盘和两张护照。
+用户：clear
+请输入图像路径或URL（回车进入纯文本对话）：
+```
+
+微调后：
+
+```
+欢迎使用 VisualGLM-6B 模型，输入图像URL或本地路径读图，继续输入内容对话，clear 重新开始，stop 终止程序
+请输入图像路径或URL（回车进入纯文本对话）： fewshot-data/2p.png
+用户：这张图片的背景里有什么内容？
+VisualGLM-6B：这张图片的背景是雨天，
+用户：描述一下这张图片。
+VisualGLM-6B：这张图片描绘了雨天的情景，雨水淅淅沥沥地落在地面上。人们穿着雨衣或雨伞，走在雨中，似乎在寻找着什么.
+用户：clear
+请输入图像路径或URL（回车进入纯文本对话）： fewshot-data/meme.png
+用户：这张图片的背景里有什么内容？
+VisualGLM-6B：这张图片的背景是木质地板。
+用户：什么颜色的地板
+VisualGLM-6B：这张图片的背景是蓝色的。
+用户：描述一下这张图片。
+VisualGLM-6B：这张图片描绘了一只棕色的小狗躺在蓝色的木质地板上。
+用户：clear
+请输入图像路径或URL（回车进入纯文本对话）： fewshot-data/passport.png
+用户：这张图片的背景里有什么内容？
+VisualGLM-6B：这张图片的背景是电脑键盘。
+用户：描述一下这张图片。
+VisualGLM-6B：这张图片的特点是电脑键盘和护照。
+用户：有几张护照    
+VisualGLM-6B：两张护照。
+用户：clear
+请输入图像路径或URL（回车进入纯文本对话）：
+```
+
+</details>
+
 ## 部署工具
 
 ### 命令行 Demo
