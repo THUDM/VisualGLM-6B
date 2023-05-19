@@ -8,7 +8,7 @@ import torch
 from transformers import AutoTokenizer
 from sat.model.mixins import CachedAutoregressiveMixin
 from sat.quantization.kernels import quantize
-
+import hashlib
 from .visualglm import VisualGLMModel
 
 def get_infer_setting(gpu_device=0, quant=None):
@@ -41,3 +41,13 @@ def generate_input(input_text, input_image_prompt, history=[], input_para=None, 
 
     input_data = {'input_query': input_text, 'input_image': image, 'history': history, 'gen_kwargs': input_para}
     return input_data
+
+
+def process_image(image_encoded):
+    decoded_image = base64.b64decode(image_encoded)
+    image = Image.open(BytesIO(decoded_image))
+    image_hash = hashlib.sha256(image.tobytes()).hexdigest()
+    image_path = f'./examples/{image_hash}.png'
+    if not os.path.isfile(image_path):
+        image.save(image_path)
+    return os.path.abspath(image_path)  

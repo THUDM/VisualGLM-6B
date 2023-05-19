@@ -9,9 +9,9 @@
 <p align="center">
     👋 加入我们的 <a href="https://join.slack.com/t/chatglm/shared_invite/zt-1th2q5u69-7tURzFuOPanmuHy9hsZnKA" target="_blank">Slack</a> 和 <a href="resources/WECHAT.md" target="_blank">WeChat</a>
 </p>
-<p align="center">
+<!-- <p align="center">
 🤖<a href="https://huggingface.co/spaces/THUDM/visualglm-6b" target="_blank">VisualGLM-6B在线演示网站</a>
-</p>
+</p> -->
 
 ## 介绍
 
@@ -171,6 +171,12 @@ curl -X POST -H "Content-Type: application/json" -d @temp.json http://127.0.0.1:
     "time":"2023-05-16 20:20:10"
   }
 ```
+
+我们也提供了使用Huggingface模型的 [api_hf.py](api_hf.py)，用法和sat模型的api一致：
+```shell
+python api_hf.py
+```
+
 
 ## 模型量化
 在Huggingface实现中，模型默认以 FP16 精度加载，运行上述代码需要大概 15GB 显存。如果你的 GPU 显存有限，可以尝试以量化方式加载模型。

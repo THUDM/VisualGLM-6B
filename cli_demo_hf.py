@@ -16,7 +16,7 @@ def build_prompt(history, prefix):
     prompt = prefix
     for query, response in history:
         prompt += f"\n\n用户：{query}"
-        prompt += f"\n\nChatGLM-6B：{response}"
+        prompt += f"\n\nVisualGLM-6B：{response}"
     return prompt
 
 
