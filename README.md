@@ -172,6 +172,7 @@ VisualGLM-6B：两张护照。
 ```
 
 </details>
+
 微调需要安装`deepspeed`库，目前本流程仅支持linux系统，更多的样例说明和Windows系统的流程说明将在近期完成。
 
 ## 部署工具
