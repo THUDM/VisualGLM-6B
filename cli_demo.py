@@ -9,6 +9,8 @@ from sat.model.mixins import CachedAutoregressiveMixin
 from sat.quantization.kernels import quantize
 
 from model import VisualGLMModel, chat
+from finetune_visualglm import FineTuneVisualGLMModel
+from sat.model import AutoModel
 
 
 def main():
@@ -19,11 +21,14 @@ def main():
     parser.add_argument("--temperature", type=float, default=.8, help='temperature for sampling')
     parser.add_argument("--english", action='store_true', help='only output English')
     parser.add_argument("--quant", choices=[8, 4], type=int, default=None, help='quantization bits')
+    parser.add_argument("--from_pretrained", type=str, default="visualglm-6b", help='pretrained ckpt')
+    parser.add_argument("--prompt_zh", type=str, default="描述这张图片。", help='Chinese prompt for the first round')
+    parser.add_argument("--prompt_en", type=str, default="Describe the image.", help='English prompt for the first round')
     args = parser.parse_args()
 
     # load model
-    model, model_args = VisualGLMModel.from_pretrained(
-        'visualglm-6b',
+    model, model_args = AutoModel.from_pretrained(
+        args.from_pretrained,
         args=argparse.Namespace(
         fp16=True,
         skip_init=True,
@@ -57,7 +62,7 @@ def main():
             if image_path == 'stop':
                 break
             if len(image_path) > 0:
-                query = 'Describe the image.' if args.english else '描述这张图片。'
+                query = args.prompt_en if args.english else args.prompt_zh
             else:
                 if not args.english:
                     query = input("用户：")
