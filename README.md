@@ -62,16 +62,18 @@ VisualGLM-6B 可以进行图像的描述的相关知识的问答。
 
 使用pip安装依赖
 ```
-pip install -r requirements.txt
+pip install -i https://pypi.org/simple -r requirements.txt
+# 国内请使用aliyun镜像，TUNA等镜像同步最近出现问题，命令如下
+pip install -i https://mirrors.aliyun.com/pypi/simple/ -r requirements.txt
 ```
-尽量使用标准PyPI源以下载较新的sat包，TUNA源等可能同步较慢。`pip install -i https://pypi.org/simple -r requirements.txt`。
-此时默认会安装`deepspeed`库（支持`sat`库训练），此库对于模型推理并非必要，同时部分Windows环境安装此库时会遇到问题。如果想绕过`deepspeed`安装，我们可以将命令改为
+此时默认会安装`deepspeed`库（支持`sat`库训练），此库对于模型推理并非必要，同时部分Windows环境安装此库时会遇到问题。
+如果想绕过`deepspeed`安装，我们可以将命令改为
 ```
-pip install -r requirements_wo_ds.txt
-pip install --no-deps "SwissArmyTransformer>=0.3.6"
+pip install -i https://mirrors.aliyun.com/pypi/simple/ -r requirements_wo_ds.txt
+pip install -i https://mirrors.aliyun.com/pypi/simple/ --no-deps "SwissArmyTransformer>=0.3.6"
 ```
 
-如果使用Huggingface transformers库调用模型（也需要安装上述依赖包！），可以通过如下代码（其中图像路径为本地路径）：
+如果使用Huggingface transformers库调用模型（**也需要安装上述依赖包！**），可以通过如下代码（其中图像路径为本地路径）：
 ```python
 from transformers import AutoTokenizer, AutoModel
 tokenizer = AutoTokenizer.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True)
@@ -102,9 +104,10 @@ print(response)
 
 请注意，`Huggingface`模型的实现位于[Huggingface的仓库](https://huggingface.co/THUDM/visualglm-6b)中，`sat`模型的实现包含于本仓库中。
 
-### 模型微调
+## 模型微调
 
-我们提供了一个小样本微调的例子，可以解压`fewshot-data.zip`以后运行如下命令：
+多模态任务分布广、种类多，预训练往往不能面面俱到。
+这里我们提供了一个小样本微调的例子，可以解压`fewshot-data.zip`以后运行如下命令：
 
 ```
 bash finetune/finetune_visualglm.sh
@@ -168,6 +171,7 @@ VisualGLM-6B：两张护照。
 ```
 
 </details>
+微调需要安装`deepspeed`库，目前本流程仅支持linux系统，更多的样例说明和Windows系统的流程说明将在近期完成。
 
 ## 部署工具
 
@@ -213,6 +217,7 @@ cd VisualGLM-6B
 python web_demo.py
 ```
 程序会自动下载 sat 模型，并运行一个 Web Server，并输出地址。在浏览器中打开输出的地址即可使用。
+
 
 我们也提供了继承自`ChatGLM-6B`的打字机效果网页版工具，此工具使用 Huggingface 模型，启动后将运行在`:8080`端口上：
 ```shell
