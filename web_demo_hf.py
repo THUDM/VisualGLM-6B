@@ -3,11 +3,10 @@ import gradio as gr
 import mdtex2html
 
 tokenizer = AutoTokenizer.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True)
-model = AutoModel.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True).half().cuda()
+model = AutoModel.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True).quantize(8).half().cuda()
 model = model.eval()
 
 """Override Chatbot.postprocess"""
-
 
 def postprocess(self, y):
     if y is None:
@@ -18,7 +17,6 @@ def postprocess(self, y):
             None if response is None else mdtex2html.convert(response),
         )
     return y
-
 
 gr.Chatbot.postprocess = postprocess
 
@@ -96,9 +94,9 @@ with gr.Blocks(css='style.css') as demo:
     
     with gr.Row():
         with gr.Column(scale=2):
-            image_path = gr.Image(type="filepath", label="Image Prompt", value=None).style(height=512)
+            image_path = gr.Image(type="filepath", label="Image Prompt", value=None).style(height=500)
         with gr.Column(scale=4):
-            chatbot = gr.Chatbot().style(height=512)
+            chatbot = gr.Chatbot().style(height=480)
     with gr.Row():
         with gr.Column(scale=2, min_width=100):
             max_length = gr.Slider(0, 4096, value=2048, step=1.0, label="Maximum length", interactive=True)

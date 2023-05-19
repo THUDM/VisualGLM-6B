@@ -212,9 +212,9 @@ git clone https://github.com/THUDM/VisualGLM-6B
 cd VisualGLM-6B
 python web_demo.py
 ```
-程序会自动下载sat模型，并运行一个 Web Server，并输出地址。在浏览器中打开输出的地址即可使用。`--quant 4`使用4比特量化减少显存占用。
+程序会自动下载 sat 模型，并运行一个 Web Server，并输出地址。在浏览器中打开输出的地址即可使用。`--quant 4`使用4比特量化减少显存占用。
 
-我们也提供了继承自`ChatGLM-6B`的打字机效果网页版工具，此工具使用Huggingface模型：
+我们也提供了继承自`ChatGLM-6B`的打字机效果网页版工具，此工具使用 Huggingface 模型，启动后将运行在`:8080`端口上：
 ```shell
 python web_demo_hf.py
 ```
@@ -224,7 +224,7 @@ python web_demo_hf.py
 ```shell
 python api.py
 ```
-程序会自动下载sat模型，默认部署在本地的 8080 端口，通过 POST 方法进行调用。下面是用`curl`请求的例子，一般而言可以也可以使用代码方法进行POST。
+程序会自动下载 sat 模型，默认部署在本地的 8080 端口，通过 POST 方法进行调用。下面是用`curl`请求的例子，一般而言可以也可以使用代码方法进行POST。
 ```shell
 echo "{\"image\":\"$(base64 path/to/example.jpg)\",\"text\":\"描述这张图片\",\"history\":[]}" > temp.json
 curl -X POST -H "Content-Type: application/json" -d @temp.json http://127.0.0.1:8080
