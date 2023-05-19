@@ -71,7 +71,7 @@ pip install -r requirements_wo_ds.txt
 pip install --no-deps "SwissArmyTransformer>=0.3.6"
 ```
 
-如果使用Huggingface transformers库调用模型，可以通过如下代码（其中图像路径为本地路径）：
+如果使用Huggingface transformers库调用模型（也需要安装上述依赖包！），可以通过如下代码（其中图像路径为本地路径）：
 ```python
 from transformers import AutoTokenizer, AutoModel
 tokenizer = AutoTokenizer.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True)
