@@ -212,12 +212,14 @@ git clone https://github.com/THUDM/VisualGLM-6B
 cd VisualGLM-6B
 python web_demo.py
 ```
-程序会自动下载 sat 模型，并运行一个 Web Server，并输出地址。在浏览器中打开输出的地址即可使用。`--quant 4`使用4比特量化减少显存占用。
+程序会自动下载 sat 模型，并运行一个 Web Server，并输出地址。在浏览器中打开输出的地址即可使用。
 
 我们也提供了继承自`ChatGLM-6B`的打字机效果网页版工具，此工具使用 Huggingface 模型，启动后将运行在`:8080`端口上：
 ```shell
 python web_demo_hf.py
 ```
+
+两种网页版 demo 均接受命令行参数`--share`以生成 gradio 公开链接，接受`--quant 4`和`--quant 8`以分别使用4比特量化/8比特量化减少显存占用。
 
 ### API部署
 首先需要安装额外的依赖 `pip install fastapi uvicorn`，然后运行仓库中的 [api.py](api.py)：
