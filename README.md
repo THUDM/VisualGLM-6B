@@ -277,7 +277,7 @@ model = quantize(model.transformer, args.quant).cuda()
 - 由于数据等方面原因，模型暂时不具有中文ocr的能力（英文ocr能力有一些），我们会在后续版本中增加这个能力。
 ## 协议
 
-本仓库的代码依照 [Apache-2.0](LICENSE) 协议开源，VisualGLM-6B 模型的权重的使用则需要遵循 [Model License](MODEL_LICENSE)。
+本仓库的代码依照 [Apache-2.0](LICENSE.txt) 协议开源，VisualGLM-6B 模型的权重的使用则需要遵循 [Model License](MODEL_LICENSE.txt)。
 
 ## 引用与致谢
 如果你觉得我们的工作有帮助的话，请考虑引用下列论文
