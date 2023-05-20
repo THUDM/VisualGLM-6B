@@ -1,4 +1,4 @@
-The GLM-130B License
+The VisualGLM-6B License
 
 1. Definitions
 
