@@ -25,23 +25,7 @@ VisualGLM-6B 由 [SwissArmyTransformer](https://github.com/THUDM/SwissArmyTransf
 
 结合模型量化技术，用户可以在消费级的显卡上进行本地部署（INT4量化级别下最低只需8.7G显存）。
 
-<details>
-<summary> VisualGLM-6B is an open-source, multimodal conversational language model that supports <b>images, Chinese, and English</b>.
-    Click to expand the English verison. </summary>
-<br>
- 
-VisualGLM-6B is an open-source, multimodal conversational language model that supports **images, Chinese, and English**. The language model is based on [ChatGLM-6B](https://github.com/THUDM/ChatGLM-6B), with 6.2 billion parameters; the image part is bridged to the language model by training [BLIP2-Qformer](https://arxiv.org/abs/2301.12597), making the total model parameters amount to 7.8 billion.
-
-VisualGLM-6B relies on 30 million high-quality Chinese image-text pairs from the [CogView](https://arxiv.org/abs/2105.13290) dataset, and 300 million selected English image-text pairs for pre-training, with equal weights for Chinese and English. This training method aligns visual information well with the semantic space of ChatGLM. In the fine-tuning stage, the model is trained on a long visual question-answering dataset to generate answers that are in line with human preferences.
-
-VisualGLM-6B is trained using the [SwissArmyTransformer](https://github.com/THUDM/SwissArmyTransformer) (short for `sat`) library, a toolkit supporting flexible modification and training of Transformers, as well as efficient parameter fine-tuning methods such as Lora and P-tuning. This project provides an interface that aligns with user habits in huggingface, as well as an interface based on sat.
-
-However, as VisualGLM-6B is still in its v1 version, it is known to have quite a few [**limitations**](#limitations), such as factual/illusion issues in image descriptions, inadequate capture of image detail information, and some limitations from the language model. Please understand these issues before use and evaluate potential risks. These issues will be the focus of optimization in future versions of VisualGLM.
-
-By integrating model quantization technology, users can deploy locally on consumer-grade graphics cards (requiring only 8.7G of video memory at the INT4 quantization level).
-</details>
-
-<!-- *Read this in [English](README_en.md). TODO* -->
+*Read this in [English](README_en.md).*
 
 ## 样例
 VisualGLM-6B 可以进行图像的描述的相关知识的问答。
