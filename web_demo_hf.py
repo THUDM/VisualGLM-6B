@@ -1,6 +1,7 @@
 from transformers import AutoModel, AutoTokenizer
 import gradio as gr
 import mdtex2html
+import torch
 
 """Override Chatbot.postprocess"""
 
@@ -54,22 +55,24 @@ def predict(input, image_path, chatbot, max_length, top_p, temperature, history)
     if image_path is None:
         return [(input, "图片不能为空。请重新上传图片并重试。")], []
     chatbot.append((parse_text(input), ""))
-    for response, history in model.stream_chat(tokenizer, image_path, input, history, max_length=max_length, top_p=top_p,
+    with torch.no_grad():
+        for response, history in model.stream_chat(tokenizer, image_path, input, history, max_length=max_length, top_p=top_p,
                                                temperature=temperature):
-        chatbot[-1] = (parse_text(input), parse_text(response))
+            chatbot[-1] = (parse_text(input), parse_text(response))
 
-        yield chatbot, history
+            yield chatbot, history
 
 
 def predict_new_image(image_path, chatbot, max_length, top_p, temperature):
     input, history = "描述这张图片。", []
     chatbot.append((parse_text(input), ""))
-    for response, history in model.stream_chat(tokenizer, image_path, input, history, max_length=max_length,
+    with torch.no_grad():
+        for response, history in model.stream_chat(tokenizer, image_path, input, history, max_length=max_length,
                                                top_p=top_p,
                                                temperature=temperature):
-        chatbot[-1] = (parse_text(input), parse_text(response))
+            chatbot[-1] = (parse_text(input), parse_text(response))
 
-        yield chatbot, history
+            yield chatbot, history
 
 
 def reset_user_input():

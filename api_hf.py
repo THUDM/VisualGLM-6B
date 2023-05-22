@@ -5,6 +5,7 @@ import uvicorn
 from fastapi import FastAPI, Request
 import datetime
 from model import process_image
+import torch
 
 tokenizer = AutoTokenizer.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True)
 model = AutoModel.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True).half().cuda()
@@ -24,7 +25,8 @@ async def visual_glm(request: Request):
     query = request_data.get("text")
     image_path = process_image(image_encoded)
 
-    result = model.stream_chat(tokenizer, image_path, query, history=history)
+    with torch.no_grad():    
+        result = model.stream_chat(tokenizer, image_path, query, history=history)
     last_result = None
     for value in result:
         last_result = value

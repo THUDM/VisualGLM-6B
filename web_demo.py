@@ -5,6 +5,7 @@ from PIL import Image
 import os
 import json
 from model import is_chinese, get_infer_setting, generate_input, chat
+import torch
 
 def generate_text_with_image(input_text, image, history=[], request_data=dict(), is_zh=True):
     input_para = {
@@ -19,7 +20,8 @@ def generate_text_with_image(input_text, image, history=[], request_data=dict(),
 
     input_data = generate_input(input_text, image, history, input_para, image_is_encoded=False)
     input_image, gen_kwargs =  input_data['input_image'], input_data['gen_kwargs']
-    answer, history, _ = chat(None, model, tokenizer, input_text, history=history, image=input_image, \
+    with torch.no_grad():
+        answer, history, _ = chat(None, model, tokenizer, input_text, history=history, image=input_image, \
                             max_length=gen_kwargs['max_length'], top_p=gen_kwargs['top_p'], \
                             top_k = gen_kwargs['top_k'], temperature=gen_kwargs['temperature'], english=not is_zh)
     return answer
@@ -112,7 +114,6 @@ def main(args):
         image_prompt.clear(fn=clear_fn2, inputs=clear_button, outputs=[result_text])
 
         print(gr.__version__)
-
 
     demo.queue(concurrency_count=10)
     demo.launch(share=args.share)
