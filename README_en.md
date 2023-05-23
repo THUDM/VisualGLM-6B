@@ -66,18 +66,18 @@ print(response)
 
 If you use the SwissArmyTransformer library to call the model, the method is similar, and you can use the environment variable SAT_HOME to determine the model download location. In the directory of this repository:
 ```python
->>> import argparse
->>> from transformers import AutoTokenizer
->>> tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True)
->>> from model import chat, VisualGLMModel
->>> model, model_args = VisualGLMModel.from_pretrained('visualglm-6b', args=argparse.Namespace(fp16=True, skip_init=True))
->>> from sat.model.mixins import CachedAutoregressiveMixin
->>> model.add_mixin('auto-regressive', CachedAutoregressiveMixin())
->>> image_path = "your image path or URL"
->>> response, history, cache_image = chat(image_path, model, tokenizer, "Describe this picture.", history=[])
->>> print(response)
->>> response, history, cache_image = chat(None, model, tokenizer, "Where could this picture possibly have been taken?", history=history, image=cache_image)
->>> print(response)
+import argparse
+from transformers import AutoTokenizer
+tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True)
+from model import chat, VisualGLMModel
+model, model_args = VisualGLMModel.from_pretrained('visualglm-6b', args=argparse.Namespace(fp16=True, skip_init=True))
+from sat.model.mixins import CachedAutoregressiveMixin
+model.add_mixin('auto-regressive', CachedAutoregressiveMixin())
+image_path = "your image path or URL"
+response, history, cache_image = chat(image_path, model, tokenizer, "Describe this picture.", history=[])
+print(response)
+response, history, cache_image = chat(None, model, tokenizer, "Where could this picture possibly have been taken?", history=history, image=cache_image)
+print(response)
 ```
 
 Using the `sat` library can also easily carry out efficient parameter fine-tuning. <!-- TODO specific code -->

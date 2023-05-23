@@ -72,18 +72,18 @@ print(response)
 
 如果使用SwissArmyTransformer库调用模型，方法类似，可以使用环境变量`SAT_HOME`决定模型下载位置。在本仓库目录下：
 ```python
->>> import argparse
->>> from transformers import AutoTokenizer
->>> tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True)
->>> from model import chat, VisualGLMModel
->>> model, model_args = VisualGLMModel.from_pretrained('visualglm-6b', args=argparse.Namespace(fp16=True, skip_init=True))
->>> from sat.model.mixins import CachedAutoregressiveMixin
->>> model.add_mixin('auto-regressive', CachedAutoregressiveMixin())
->>> image_path = "your image path or URL"
->>> response, history, cache_image = chat(image_path, model, tokenizer, "描述这张图片。", history=[])
->>> print(response)
->>> response, history, cache_image = chat(None, model, tokenizer, "这张图片可能是在什么场所拍摄的？", history=history, image=cache_image)
->>> print(response)
+import argparse
+from transformers import AutoTokenizer
+tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True)
+from model import chat, VisualGLMModel
+model, model_args = VisualGLMModel.from_pretrained('visualglm-6b', args=argparse.Namespace(fp16=True, skip_init=True))
+from sat.model.mixins import CachedAutoregressiveMixin
+model.add_mixin('auto-regressive', CachedAutoregressiveMixin())
+image_path = "your image path or URL"
+response, history, cache_image = chat(image_path, model, tokenizer, "描述这张图片。", history=[])
+print(response)
+response, history, cache_image = chat(None, model, tokenizer, "这张图片可能是在什么场所拍摄的？", history=history, image=cache_image)
+print(response)
 ```
 使用`sat`库也可以轻松进行进行参数高效微调。<!-- TODO 具体代码 -->
 
