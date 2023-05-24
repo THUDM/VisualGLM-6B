@@ -172,6 +172,7 @@ if __name__ == '__main__':
 
     model_type = 'visualglm-6b'
     model, args = FineTuneVisualGLMModel.from_pretrained(model_type, args)
+    args.tokenizer_type = "your local path for chatglm"
     tokenizer = get_tokenizer(args)
     label_pad_token_id = -100 if args.ignore_pad_token_for_loss else tokenizer.pad_token_id
     def data_collator(examples):
