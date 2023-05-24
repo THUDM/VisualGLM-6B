@@ -74,6 +74,7 @@ print(response)
 response, history = model.chat(tokenizer, image_path, "这张图片可能是在什么场所拍摄的？", history=history)
 print(response)
 ```
+以上代码会由 `transformers` 自动下载模型实现和参数。完整的模型实现可以在 [Hugging Face Hub](https://huggingface.co/THUDM/visualglm-6b)。如果你从 Hugging Face Hub 上下载模型参数的速度较慢，可以从[这里](https://cloud.tsinghua.edu.cn/d/43ffb021ca5f4897b56a/)手动下载模型参数文件，并从本地加载模型。具体做法请参考[从本地加载模型](https://github.com/THUDM/ChatGLM-6B#%E4%BB%8E%E6%9C%AC%E5%9C%B0%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B)。
 
 如果使用SwissArmyTransformer库调用模型，方法类似，可以使用环境变量`SAT_HOME`决定模型下载位置。在本仓库目录下：
 ```python
