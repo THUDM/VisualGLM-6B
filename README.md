@@ -43,6 +43,14 @@ VisualGLM-6B 可以进行图像的描述的相关知识的问答。
 
 </details>
 
+## 友情链接
+
+* [XrayGLM](https://github.com/WangRongsheng/XrayGLM) 是基于visualGLM-6B在X光诊断数据集上微调的X光诊断问答的项目，能根据X光片回答医学相关询问。
+<details>
+<summary>点击查看样例</summary>
+
+![样例](https://github.com/WangRongsheng/XrayGLM/raw/main/assets/images/xrayglm.png)
+</details>
 
 ## 使用
 
