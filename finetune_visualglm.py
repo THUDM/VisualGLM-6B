@@ -17,6 +17,8 @@ class FineTuneVisualGLMModel(VisualGLMModel):
             # If you use lora on other "normal" Transformer, just use it with head_first=False (by default)
             self.add_mixin("lora", LoraMixin(args.num_layers, args.lora_rank, head_first=True, num_attention_heads=args.num_attention_heads, hidden_size_per_attention_head=args.hidden_size // args.num_attention_heads, layer_range=list(range(0, 28, 14))), reinit=True)
             # self.get_mixin("eva").model.glm_proj = replace_linear_with_lora(self.get_mixin("eva").model.glm_proj, LoraLinear, args.lora_rank)
+        elif args.use_qlora:
+            self.add_mixin("lora", LoraMixin(args.num_layers, args.lora_rank, head_first=True, num_attention_heads=args.num_attention_heads, hidden_size_per_attention_head=args.hidden_size // args.num_attention_heads, layer_range=list(range(0, 28, 14)), qlora=True), reinit=True)
         self.args = args
         
     @classmethod
@@ -26,13 +28,14 @@ class FineTuneVisualGLMModel(VisualGLMModel):
         group.add_argument('--lora_rank', type=int, default=10)
         group.add_argument('--use_ptuning', action="store_true")
         group.add_argument('--use_lora', action="store_true")
+        group.add_argument('--use_qlora', action="store_true")
         return super().add_model_specific_args(parser)
 
     def disable_untrainable_params(self):
         enable = []
         if self.args.use_ptuning:
             enable.extend(['ptuning'])
-        if self.args.use_lora:
+        if self.args.use_lora or self.args.use_qlora:
             enable.extend(['matrix_A', 'matrix_B'])
         for n, p in self.named_parameters():
             flag = False
