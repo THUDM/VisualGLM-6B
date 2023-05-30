@@ -94,6 +94,12 @@ After unzipping fewshot-data.zip, run the following command:
 bash finetune/finetune_visualglm.sh
 ```
 
+Currently we support three types of (parameter-efficient) fine-tuning:
+
+* LoRA: In the given example, we add rank=10 LoRA for layer 0 and layer 14 in ChatGLM. You can adjust `--layer_range` and `--lora_rank` to fit your application and data amount.
+* QLoRA: If your resource is limited, consider using `bash finetune/finetune_visualglm_qlora.sh`, which do 4-bit quantization for ChatGLM Linear layers, reducing the required GPU memory to 9.8 GB.
+* P-tuning: You can replace `--use_lora` to `--use_ptuning`, but not recommended, unless your application has a relatively fixed input and output template.
+
 After training, you can use the following command for inference:
 
 ```
