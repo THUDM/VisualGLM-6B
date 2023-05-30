@@ -15,10 +15,10 @@ class FineTuneVisualGLMModel(VisualGLMModel):
             self.add_mixin("ptuning", PTuningV2Mixin(args.num_layers, args.hidden_size // args.num_attention_heads, args.num_attention_heads, args.pre_seq_len))
         if args.use_lora:
             # If you use lora on other "normal" Transformer, just use it with head_first=False (by default)
-            self.add_mixin("lora", LoraMixin(args.num_layers, args.lora_rank, head_first=True, num_attention_heads=args.num_attention_heads, hidden_size_per_attention_head=args.hidden_size // args.num_attention_heads, layer_range=list(range(0, 28, 14))), reinit=True)
+            self.add_mixin("lora", LoraMixin(args.num_layers, args.lora_rank, head_first=True, num_attention_heads=args.num_attention_heads, hidden_size_per_attention_head=args.hidden_size // args.num_attention_heads, layer_range=args.layer_range), reinit=True)
             # self.get_mixin("eva").model.glm_proj = replace_linear_with_lora(self.get_mixin("eva").model.glm_proj, LoraLinear, args.lora_rank)
         elif args.use_qlora:
-            self.add_mixin("lora", LoraMixin(args.num_layers, args.lora_rank, head_first=True, num_attention_heads=args.num_attention_heads, hidden_size_per_attention_head=args.hidden_size // args.num_attention_heads, layer_range=list(range(0, 28, 14)), qlora=True), reinit=True)
+            self.add_mixin("lora", LoraMixin(args.num_layers, args.lora_rank, head_first=True, num_attention_heads=args.num_attention_heads, hidden_size_per_attention_head=args.hidden_size // args.num_attention_heads, layer_range=args.layer_range, qlora=True), reinit=True)
         self.args = args
         
     @classmethod
@@ -29,6 +29,7 @@ class FineTuneVisualGLMModel(VisualGLMModel):
         group.add_argument('--use_ptuning', action="store_true")
         group.add_argument('--use_lora', action="store_true")
         group.add_argument('--use_qlora', action="store_true")
+        group.add_argument('--layer_range', nargs='+', type=int, default=None)
         return super().add_model_specific_args(parser)
 
     def disable_untrainable_params(self):

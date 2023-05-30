@@ -143,15 +143,29 @@ def replace_linear_with_lora(lin, base_cls, r, *args, **kw_args):
     return base_cls(in_dim, out_dim, r, *args, **kw_args)
 
 def merge_linear_lora(lin):
-    out_dim, in_dim = lin.original.weight.shape
-    new_lin = nn.Linear(in_dim, out_dim)
+    if type(lin.original) is HackLinear:
+        weight = lin.original.weight
+        out_dim, in_dim = weight.shape
+        new_lin = nn.Linear(in_dim, out_dim)
+    else:
+        import bitsandbytes.functional as F
+        weight = F.dequantize_fp4(lin.original.weight.data, lin.original.weight.quant_state).to(lin.original.bias.data.dtype)
+        out_dim, in_dim = weight.shape
+        new_lin = HackLinearNF4(in_dim, out_dim)
     new_lin.bias.data = lin.original.bias.data
-    new_lin.weight.data = lin.original.weight.data + (lin.matrix_A.data.T.float() @ lin.matrix_B.data.T.float() * lin.scaling).T.to(lin.original.weight.data.dtype)
-    return new_lin
+    new_lin.weight.data = weight + (lin.matrix_A.data.T.float() @ lin.matrix_B.data.T.float() * lin.scaling).T.to(lin.original.bias.data.dtype)
+    return new_lin.cuda()
 
 def merge_qkv_lora(lin):
-    out_dim, in_dim = lin.original.weight.shape
-    new_lin = nn.Linear(in_dim, out_dim)
+    if type(lin.original) is HackLinear:
+        weight = lin.original.weight
+        out_dim, in_dim = weight.shape
+        new_lin = nn.Linear(in_dim, out_dim)
+    else:
+        import bitsandbytes.functional as F
+        weight = F.dequantize_fp4(lin.original.weight.data, lin.original.weight.quant_state).to(lin.original.bias.data.dtype)
+        out_dim, in_dim = weight.shape
+        new_lin = HackLinearNF4(in_dim, out_dim)
     new_lin.bias.data = lin.original.bias.data
     new_qkv = []
     for i in range(3):
@@ -162,8 +176,8 @@ def merge_qkv_lora(lin):
         new_qkv = torch.cat(new_qkv, -1).view(ini_shape[0], 3*ini_shape[1])
     else:
         new_qkv = torch.cat(new_qkv, -1)
-    new_lin.weight.data = lin.original.weight.data + new_qkv.T.to(lin.original.weight.data.dtype)
-    return new_lin
+    new_lin.weight.data = weight + new_qkv.T.to(lin.original.bias.data.dtype)
+    return new_lin.cuda()
 
 class LoraMixin(BaseMixin):
     def __init__(self, 

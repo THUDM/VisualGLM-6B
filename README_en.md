@@ -108,7 +108,27 @@ python cli_demo.py --from_pretrained your_checkpoint_path --prompt_zh 这张图�
 
 Fine-tuning requires the installation of the deepspeed library, and currently this process only supports the Linux system. More examples and instructions for the Windows system will be completed in the near future.
 
-Fine-tuning requires the installation of the deepspeed library, and currently this process only supports the Linux system. More examples and instructions for the Windows system will be completed in the near future.
+If you want to merge LoRA weights into original weights, just call `merge_lora()`:
+
+```python
+from finetune_visualglm import FineTuneVisualGLMModel
+import argparse
+
+model, args = FineTuneVisualGLMModel.from_pretrained('checkpoints/finetune-visualglm-6b-05-19-07-36',
+        args=argparse.Namespace(
+        fp16=True,
+        skip_init=True,
+        use_gpu_initialization=True,
+        device='cuda',
+    ))
+model.get_mixin('lora').merge_lora()
+args.use_lora = False
+args.layer_range = []
+args.save = 'merge_lora'
+args.mode = 'inference'
+from sat.training.model_io import save_checkpoint
+save_checkpoint(1, model, None, None, args)
+```
 
 ## Deployment Tools
 

@@ -172,6 +172,28 @@ VisualGLM-6B：两张护照。
 请输入图像路径或URL（回车进入纯文本对话）：
 ```
 
+如果希望把LoRA部分的参数合并到原始的权重，可以调用`merge_lora()`，例如：
+
+```python
+from finetune_visualglm import FineTuneVisualGLMModel
+import argparse
+
+model, args = FineTuneVisualGLMModel.from_pretrained('checkpoints/finetune-visualglm-6b-05-19-07-36',
+        args=argparse.Namespace(
+        fp16=True,
+        skip_init=True,
+        use_gpu_initialization=True,
+        device='cuda',
+    ))
+model.get_mixin('lora').merge_lora()
+args.use_lora = False
+args.layer_range = []
+args.save = 'merge_lora'
+args.mode = 'inference'
+from sat.training.model_io import save_checkpoint
+save_checkpoint(1, model, None, None, args)
+```
+
 </details>
 
 微调需要安装`deepspeed`库，目前本流程仅支持linux系统，更多的样例说明和Windows系统的流程说明将在近期完成。
