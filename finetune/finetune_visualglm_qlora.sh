@@ -43,15 +43,16 @@ gpt_options=" \
        --eval-batch-size 8 \
        --zero-stage 1 \
        --lr 0.0001 \
-       --batch-size 4 \
+       --batch-size 1 \
+       --gradient-accumulation-steps 4 \
        --skip-init \
        --fp16 \
-       --use_lora
+       --use_qlora
 "
 
               
 
-run_cmd="${OPTIONS_NCCL} ${OPTIONS_SAT} deepspeed --master_port 16666 --hostfile ${HOST_FILE_PATH} finetune_visualglm.py ${gpt_options}"
+run_cmd="${OPTIONS_NCCL} ${OPTIONS_SAT} deepspeed --master_port 16666 --include localhost:0 --hostfile ${HOST_FILE_PATH} finetune_visualglm.py ${gpt_options}"
 echo ${run_cmd}
 eval ${run_cmd}
 

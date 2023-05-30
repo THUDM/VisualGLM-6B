@@ -109,6 +109,12 @@ print(response)
 bash finetune/finetune_visualglm.sh
 ```
 
+目前支持三种方式的微调：
+
+* LoRA：样例中为ChatGLM模型的第0层和第14层加入了rank=10的LoRA微调，可以根据具体情景和数据量调整`--layer_range`和`--lora_rank`参数。
+* QLoRA：如果资源有限，可以考虑使用`bash finetune/finetune_visualglm_qlora.sh`，QLoRA将ChatGLM的线性层进行了4bit量化，只需要9.8G显存即可微调。
+* P-tuning：可以将`--use_lora`替换为`--use_ptuning`，不过不推荐使用，除非模型应用场景非常固定。
+
 训练好以后可以使用如下命令推理：
 
 ```
