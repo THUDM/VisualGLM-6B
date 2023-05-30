@@ -21,7 +21,7 @@ VisualGLM-6B 是一个开源的，支持**图像、中文和英文**的多模态
 
 VisualGLM-6B 依靠来自于 [CogView](https://arxiv.org/abs/2105.13290) 数据集的30M高质量中文图文对，与300M经过筛选的英文图文对进行预训练，中英文权重相同。该训练方式较好地将视觉信息对齐到ChatGLM的语义空间；之后的微调阶段，模型在长视觉问答数据上训练，以生成符合人类偏好的答案。
 
-VisualGLM-6B 由 [SwissArmyTransformer](https://github.com/THUDM/SwissArmyTransformer)(简称`sat`) 库训练，这是一个支持Transformer灵活修改、训练的工具库，支持Lora、P-tuning等参数高效微调方法。本项目提供了符合用户习惯的huggingface接口，也提供了基于sat的接口。
+VisualGLM-6B 由 [SwissArmyTransformer](https://github.com/THUDM/SwissArmyTransformer)(简称`sat`) 库训练，这是一个支持Transformer灵活修改、训练的工具库，支持Lora、P-tuning等参数高效微调方法。本项目提供了符合用户习惯的Hugging Face接口，也提供了基于sat的接口。
 
 结合模型量化技术，用户可以在消费级的显卡上进行本地部署（INT4量化级别下最低只需8.7G显存）。
 
@@ -69,7 +69,7 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ -r requirements_wo_ds.txt
 pip install -i https://mirrors.aliyun.com/pypi/simple/ --no-deps "SwissArmyTransformer>=0.3.6"
 ```
 
-如果使用Huggingface transformers库调用模型（**也需要安装上述依赖包！**），可以通过如下代码（其中图像路径为本地路径）：
+如果使用Hugging Face transformers库调用模型（**也需要安装上述依赖包！**），可以通过如下代码（其中图像路径为本地路径）：
 ```python
 from transformers import AutoTokenizer, AutoModel
 tokenizer = AutoTokenizer.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True)
@@ -224,7 +224,7 @@ optional arguments:
 ```
 需要注意的是，在训练时英文问答对的提示词为`Q: A:`，而中文为`问：答：`，在网页demo中采取了中文的提示，因此英文回复会差一些且夹杂中文；如果需要英文回复，请使用`cli_demo.py`中的`--english`选项。
 
-我们也提供了继承自`ChatGLM-6B`的打字机效果命令行工具，此工具使用Huggingface模型：
+我们也提供了继承自`ChatGLM-6B`的打字机效果命令行工具，此工具使用Hugging Face模型：
 ```shell
 python cli_demo_hf.py
 ```
@@ -243,7 +243,7 @@ python web_demo.py
 程序会自动下载 sat 模型，并运行一个 Web Server，并输出地址。在浏览器中打开输出的地址即可使用。
 
 
-我们也提供了继承自`ChatGLM-6B`的打字机效果网页版工具，此工具使用 Huggingface 模型，启动后将运行在`:8080`端口上：
+我们也提供了继承自`ChatGLM-6B`的打字机效果网页版工具，此工具使用 Hugging Face 模型，启动后将运行在`:8080`端口上：
 ```shell
 python web_demo_hf.py
 ```
@@ -270,14 +270,14 @@ curl -X POST -H "Content-Type: application/json" -d @temp.json http://127.0.0.1:
   }
 ```
 
-我们也提供了使用Huggingface模型的 [api_hf.py](api_hf.py)，用法和sat模型的api一致：
+我们也提供了使用Hugging Face模型的 [api_hf.py](api_hf.py)，用法和sat模型的api一致：
 ```shell
 python api_hf.py
 ```
 
 
 ## 模型量化
-在Huggingface实现中，模型默认以 FP16 精度加载，运行上述代码需要大概 15GB 显存。如果你的 GPU 显存有限，可以尝试以量化方式加载模型。
+在Hugging Face实现中，模型默认以 FP16 精度加载，运行上述代码需要大概 15GB 显存。如果你的 GPU 显存有限，可以尝试以量化方式加载模型。
 使用方法如下：
 ```python
 # 按需修改，目前只支持 4/8 bit 量化。下面将只量化ChatGLM，ViT 量化时误差较大
