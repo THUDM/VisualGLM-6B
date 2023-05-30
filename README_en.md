@@ -122,7 +122,6 @@ model, args = FineTuneVisualGLMModel.from_pretrained('checkpoints/finetune-visua
         device='cuda',
     ))
 model.get_mixin('lora').merge_lora()
-args.use_lora = False
 args.layer_range = []
 args.save = 'merge_lora'
 args.mode = 'inference'
