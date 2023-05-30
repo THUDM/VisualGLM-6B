@@ -30,8 +30,6 @@ def main():
     model, model_args = AutoModel.from_pretrained(
         args.from_pretrained,
         args=argparse.Namespace(
-        mode='inference',
-        to_cuda_before_load=True,
         fp16=True,
         skip_init=True,
         use_gpu_initialization=True if (torch.cuda.is_available() and args.quant is None) else False,

@@ -6,7 +6,7 @@ from sat import mpu, get_args, get_tokenizer
 from sat.training.deepspeed_training import training_main
 from model import VisualGLMModel
 from sat.model.finetune import PTuningV2Mixin
-from sat.model.finetune.lora_mixin import LoraMixin
+from lora_mixin import LoraMixin
 
 class FineTuneVisualGLMModel(VisualGLMModel):
     def __init__(self, args, transformer=None, parallel_output=True, **kw_args):
@@ -172,9 +172,12 @@ if __name__ == '__main__':
     known, args_list = py_parser.parse_known_args()
     args = get_args(args_list)
     args = argparse.Namespace(**vars(args), **vars(known))
+    args.device = 'cpu'
 
     model_type = 'visualglm-6b'
     model, args = FineTuneVisualGLMModel.from_pretrained(model_type, args)
+    if torch.cuda.is_available():
+        model = model.to('cuda')
     tokenizer = get_tokenizer(args)
     label_pad_token_id = -100 if args.ignore_pad_token_for_loss else tokenizer.pad_token_id
     def data_collator(examples):
