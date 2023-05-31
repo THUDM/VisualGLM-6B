@@ -17,6 +17,20 @@ class HackLinear(nn.Linear):
         if prefix + 'bias' in state_dict:
             self.bias.data.copy_(state_dict[prefix+'bias'])
 
+class HackRowParallelLinear(RowParallelLinear):
+    def _load_from_state_dict(self, state_dict, prefix, local_metadata, strict, missing_keys, unexpected_keys, error_msgs):
+        if prefix + 'weight' in state_dict:
+            self.weight.data.copy_(state_dict[prefix+'weight'])
+        if prefix + 'bias' in state_dict:
+            self.bias.data.copy_(state_dict[prefix+'bias'])
+
+class HackColumnParallelLinear(ColumnParallelLinear):
+    def _load_from_state_dict(self, state_dict, prefix, local_metadata, strict, missing_keys, unexpected_keys, error_msgs):
+        if prefix + 'weight' in state_dict:
+            self.weight.data.copy_(state_dict[prefix+'weight'])
+        if prefix + 'bias' in state_dict:
+            self.bias.data.copy_(state_dict[prefix+'bias'])
+
 try:
     from bitsandbytes.nn import LinearNF4
     def copy_nested_list(src, dst):
@@ -49,7 +63,7 @@ class HackParameterList(nn.ParameterList):
                 self[i].data.copy_(state_dict[prefix+str(i)])
 
 class LoraLinear(nn.Module):
-    def __init__(self, in_dim, out_dim, r, lora_alpha=1., lora_dropout=0., qlora=False):
+    def __init__(self, original_cls, in_dim, out_dim, r, lora_alpha=1., lora_dropout=0., qlora=False):
         super().__init__()
         if lora_dropout and lora_dropout > 0:
             self.lora_dropout = nn.Dropout(p=lora_dropout)
@@ -61,7 +75,13 @@ class LoraLinear(nn.Module):
         if qlora:
             self.original = HackLinearNF4(in_dim, out_dim)
         else:
-            self.original = HackLinear(in_dim, out_dim)
+            map_cls = {
+                nn.Linear: (HackLinear, {}),
+                ColumnParallelLinear: (HackColumnParallelLinear, {'gather_output': False, 'stride': 3}),
+                RowParallelLinear: (HackRowParallelLinear, {'input_is_parallel': True})
+            }
+            base_cls, kwargs = map_cls[original_cls]
+            self.original = base_cls(in_dim, out_dim, **kwargs)
         self.matrix_A = nn.Parameter(torch.empty((r, in_dim)))
         self.matrix_B = nn.Parameter(torch.empty((out_dim, r)))
         nn.init.kaiming_uniform_(self.matrix_A, a=math.sqrt(5))
@@ -81,7 +101,7 @@ class LoraLinear(nn.Module):
 
 
 class LoraQKV(nn.Module):
-    def __init__(self, in_dim, out_dim, r, lora_alpha=1., lora_dropout=0., head_first=False, num_attention_heads=None, hidden_size_per_attention_head=None, qlora=False):
+    def __init__(self, original_cls, in_dim, out_dim, r, lora_alpha=1., lora_dropout=0., head_first=False, num_attention_heads=None, hidden_size_per_attention_head=None, qlora=False):
         """
         You can use safely with this layer, ONLY WHEN query_key_value output is query_key_value order.
         If you use a different order like ChatGLM
@@ -97,7 +117,13 @@ class LoraQKV(nn.Module):
         if qlora:
             self.original = HackLinearNF4(in_dim, out_dim)
         else:
-            self.original = HackLinear(in_dim, out_dim)
+            map_cls = {
+                nn.Linear: (HackLinear, {}),
+                ColumnParallelLinear: (HackColumnParallelLinear, {'gather_output': False, 'stride': 3}),
+                RowParallelLinear: (HackRowParallelLinear, {'input_is_parallel': True})
+            }
+            base_cls, kwargs = map_cls[original_cls]
+            self.original = base_cls(in_dim, out_dim, **kwargs)
         self.matrix_A = HackParameterList([nn.Parameter(torch.empty((r, in_dim))) for _ in range(3)])
         self.matrix_B = HackParameterList([nn.Parameter(torch.empty((out_dim // 3, r))) for _ in range(3)])
         for i in range(3):
@@ -140,7 +166,7 @@ class LoraQKV(nn.Module):
 def replace_linear_with_lora(lin, base_cls, r, *args, **kw_args):
     # not supported for linear without bias for now
     out_dim, in_dim = lin.weight.shape
-    return base_cls(in_dim, out_dim, r, *args, **kw_args)
+    return base_cls(type(lin), in_dim, out_dim, r, *args, **kw_args)
 
 def merge_linear_lora(lin):
     if type(lin.original) is HackLinear:
