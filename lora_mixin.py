@@ -138,7 +138,7 @@ def replace_linear_with_lora(lin, partition, r, *args, **kw_args):
     return LoraLinear(original_cls, partition, in_dim, out_dim, r, *args, **kw_args)
 
 def merge_linear_lora(lin):
-    if type(lin.original) is HackLinear:
+    if lin.original.weight.data.dtype is not torch.uint8:
         weight = lin.original.weight
         out_dim, in_dim = weight.shape
         new_lin = nn.Linear(in_dim, out_dim)
@@ -230,7 +230,7 @@ class LoraMixin(BaseMixin):
             print(f'merge layer {i} lora attention back to linear')
             self.transformer.layers[i].attention.dense = merge_linear_lora(self.transformer.layers[i].attention.dense)
             self.transformer.layers[i].attention.query_key_value = merge_linear_lora(self.transformer.layers[i].attention.query_key_value)
-            if parent_model.transformer.layers[i].is_decoder:
+            if self.transformer.layers[i].is_decoder:
                 print(f'merge layer {i} lora cross attention back to linear')
                 self.transformer.layers[i].cross_attention.dense = merge_linear_lora(self.transformer.layers[i].cross_attention.dense)
                 self.transformer.layers[i].cross_attention.query = merge_linear_lora(self.transformer.layers[i].cross_attention.query)
