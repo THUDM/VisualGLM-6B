@@ -256,6 +256,9 @@ python web_demo_hf.py
 python api.py
 ```
 程序会自动下载 sat 模型，默认部署在本地的 8080 端口，通过 POST 方法进行调用。下面是用`curl`请求的例子，一般而言可以也可以使用代码方法进行POST。
+
+1. 图文对话
+
 ```shell
 echo "{\"image\":\"$(base64 path/to/example.jpg)\",\"text\":\"描述这张图片\",\"history\":[]}" > temp.json
 curl -X POST -H "Content-Type: application/json" -d @temp.json http://127.0.0.1:8080
@@ -270,7 +273,31 @@ curl -X POST -H "Content-Type: application/json" -d @temp.json http://127.0.0.1:
   }
 ```
 
+2. 纯文本对话
+
+```shell
+echo "{\"image\":\"\",\"text\":\"你好\",\"history\":[]}" > temp.json
+curl -X POST -H "Content-Type: application/json" -d @temp.json http://127.0.0.1:8080
+```
+
+得到的返回值为
+
+```
+{
+    "result": "你好！请问有什么需要帮助的吗？", 
+    "history": [
+        [
+            "你好", 
+            "你好！请问有什么需要帮助的吗？"
+        ]
+    ], 
+    "status": 200, 
+    "time": "2023-06-16 15:51:08"
+}
+```
+
 我们也提供了使用Huggingface模型的 [api_hf.py](api_hf.py)，用法和sat模型的api一致：
+
 ```shell
 python api_hf.py
 ```
