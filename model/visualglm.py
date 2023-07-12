@@ -12,6 +12,9 @@ class ImageMixin(BaseMixin):
     def __init__(self, args):
         super().__init__()
         self.args = deepcopy(args)
+        if hasattr(args, 'model_parallel_size'):
+            args.eva_args['model_parallel_size'] = args.model_parallel_size
+            args.qformer_args['model_parallel_size'] = args.model_parallel_size
         self.model = BLIP2(args.eva_args, args.qformer_args)
 
     def word_embedding_forward(self, input_ids, output_cross_layer, **kw_args):
