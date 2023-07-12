@@ -29,8 +29,10 @@ async def visual_glm(request: Request):
     input_para.update(request_data)
 
     is_zh = is_chinese(input_text)
-    input_data = generate_input(input_text, input_image_encoded, history, input_para)
-    input_image, gen_kwargs =  input_data['input_image'], input_data['gen_kwargs']
+    image_is_encoded = False if input_image_encoded == "" else True
+    input_data = generate_input(input_text, input_image_encoded, history, input_para, image_is_encoded)
+    input_image = None if input_image_encoded == "" else input_data["input_image"]
+    gen_kwargs = input_data["gen_kwargs"]
     with torch.no_grad():
         answer, history, _ = chat(None, model, tokenizer, input_text, history=history, image=input_image, \
                             max_length=gen_kwargs['max_length'], top_p=gen_kwargs['top_p'], \
