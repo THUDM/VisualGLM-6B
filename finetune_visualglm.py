@@ -6,7 +6,7 @@ from sat import mpu, get_args, get_tokenizer
 from sat.training.deepspeed_training import training_main
 from model import VisualGLMModel
 from sat.model.finetune import PTuningV2Mixin
-from lora_mixin import LoraMixin
+from sat.model.finetune.lora2 import LoraMixin
 
 class FineTuneVisualGLMModel(VisualGLMModel):
     def __init__(self, args, transformer=None, parallel_output=True, **kw_args):
@@ -14,11 +14,10 @@ class FineTuneVisualGLMModel(VisualGLMModel):
         if args.use_ptuning:
             self.add_mixin("ptuning", PTuningV2Mixin(args.num_layers, args.hidden_size // args.num_attention_heads, args.num_attention_heads, args.pre_seq_len))
         if args.use_lora:
-            # If you use lora on other "normal" Transformer, just use it with head_first=False (by default)
-            self.add_mixin("lora", LoraMixin(args.num_layers, args.lora_rank, head_first=True, num_attention_heads=args.num_attention_heads, hidden_size_per_attention_head=args.hidden_size // args.num_attention_heads, layer_range=args.layer_range), reinit=True)
+            self.add_mixin("lora", LoraMixin(args.num_layers, args.lora_rank, layer_range=args.layer_range), reinit=True)
             # self.get_mixin("eva").model.glm_proj = replace_linear_with_lora(self.get_mixin("eva").model.glm_proj, LoraLinear, args.lora_rank)
         elif args.use_qlora:
-            self.add_mixin("lora", LoraMixin(args.num_layers, args.lora_rank, head_first=True, num_attention_heads=args.num_attention_heads, hidden_size_per_attention_head=args.hidden_size // args.num_attention_heads, layer_range=args.layer_range, qlora=True), reinit=True)
+            self.add_mixin("lora", LoraMixin(args.num_layers, args.lora_rank, layer_range=args.layer_range, qlora=True), reinit=True)
         self.args = args
         
     @classmethod

@@ -229,6 +229,11 @@ optional arguments:
 python cli_demo_hf.py
 ```
 
+我们也支持模型并行多卡部署：（需要更新最新版本的sat，如果之前下载了checkpoint，也需要手动删除后重新下载）
+```
+torchrun --nnode 1 --nproc-per-node 2 cli_demo_mp.py
+```
+
 ### 网页版 Demo
 ![web_demo](examples/web_demo.png)
 
