@@ -116,7 +116,7 @@ def main(args):
         print(gr.__version__)
 
     demo.queue(concurrency_count=10)
-    demo.launch(share=args.share)
+    demo.launch(share=args.share,server_name=args.server_name)
 
 
 if __name__ == '__main__':
@@ -124,6 +124,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--quant", choices=[8, 4], type=int, default=None)
     parser.add_argument("--share", action="store_true")
+    parser.add_argument("--server_name", type=str, default="127.0.0.1")
     args = parser.parse_args()
 
     main(args)
