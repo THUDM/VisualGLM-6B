@@ -38,17 +38,21 @@ def request_model(input_text, temperature, top_p, image_prompt, result_previous)
 
     is_zh = is_chinese(input_text)
     if image_prompt is None:
-        if is_zh:
-            result_text.append((input_text, '图片为空！请上传图片并重试。'))
-        else:
-            result_text.append((input_text, 'Image empty! Please upload a image and retry.'))
-        return input_text, result_text
+        ...
+        # if is_zh:
+        #     result_text.append((input_text, '图片为空！请上传图片并重试。'))
+        # else:
+        #     result_text.append((input_text, 'Image empty! Please upload a image and retry.'))
+        # return input_text, result_text
     elif input_text == "":
         result_text.append((input_text, 'Text empty! Please enter text and retry.'))
         return "", result_text
 
     request_para = {"temperature": temperature, "top_p": top_p}
-    image = Image.open(image_prompt)
+    if image_prompt is not None:
+        image = Image.open(image_prompt)
+    else:
+        image = None
     try:
         answer = generate_text_with_image(input_text, image, result_text.copy(), request_para, is_zh)
     except Exception as e:

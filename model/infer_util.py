@@ -33,9 +33,10 @@ def is_chinese(text):
     return zh_pattern.search(text)
 
 def generate_input(input_text, input_image_prompt, history=[], input_para=None, image_is_encoded=True):
+    image = None
     if not image_is_encoded:
         image = input_image_prompt
-    else:
+    elif input_image_prompt:
         decoded_image = base64.b64decode(input_image_prompt)
         image = Image.open(BytesIO(decoded_image))
 
@@ -50,4 +51,4 @@ def process_image(image_encoded):
     image_path = f'./examples/{image_hash}.png'
     if not os.path.isfile(image_path):
         image.save(image_path)
-    return os.path.abspath(image_path)  
+    return os.path.abspath(image_path)
