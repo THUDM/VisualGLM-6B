@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import gradio as gr
+import requests
 from PIL import Image
 import os
 import json
@@ -120,6 +121,7 @@ def main(args):
         print(gr.__version__)
 
     demo.queue(concurrency_count=10)
+    print(f"Public IP address:{requests.get('https://api.ipify.org').text}")
     demo.launch(share=args.share, server_name=args.server_name, server_port=args.server_port)
 
 
