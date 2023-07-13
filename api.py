@@ -6,8 +6,15 @@ from model import is_chinese, get_infer_setting, generate_input, chat
 import datetime
 import torch
 
+
+# 命令行参数
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("--quant", choices=[8, 4], type=int, default=None)
+args = parser.parse_args()
+
 gpu_number = 0
-model, tokenizer = get_infer_setting(gpu_device=gpu_number)
+model, tokenizer = get_infer_setting(gpu_device=gpu_number,quant=args.quant)
 
 app = FastAPI()
 @app.post('/')
