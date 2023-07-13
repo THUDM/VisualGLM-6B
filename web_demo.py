@@ -3,8 +3,6 @@
 import gradio as gr
 import requests
 from PIL import Image
-import os
-import json
 from model import is_chinese, get_infer_setting, generate_input, chat
 import torch
 
