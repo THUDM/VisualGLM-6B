@@ -38,6 +38,19 @@ VisualGLM-6B can answer questions related to image description.
 
 ## Usage
 
+
+test passed：
+
+CentOS Linux release 7.9.2009 (Core)
+
+NVIDIA Driver Version: 525.105.17
+
+cuda_11.7
+
+cuDNN v8.9.3 (July 11th, 2023), for CUDA 11.x
+
+Python 3.10.12
+
 ### Model Inference
 
 Install dependencies with pip
