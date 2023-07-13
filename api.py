@@ -6,17 +6,19 @@ from model import is_chinese, get_infer_setting, generate_input, chat
 import datetime
 import torch
 
-
 # 命令行参数
 import argparse
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--quant", choices=[8, 4], type=int, default=None)
 args = parser.parse_args()
 
 gpu_number = 0
-model, tokenizer = get_infer_setting(gpu_device=gpu_number,quant=args.quant)
+model, tokenizer = get_infer_setting(gpu_device=gpu_number, quant=args.quant)
 
 app = FastAPI()
+
+
 @app.post('/')
 async def visual_glm(request: Request):
     json_post_raw = await request.json()
@@ -37,12 +39,12 @@ async def visual_glm(request: Request):
 
     is_zh = is_chinese(input_text)
     input_data = generate_input(input_text, input_image_encoded, history, input_para)
-    input_image, gen_kwargs =  input_data['input_image'], input_data['gen_kwargs']
+    input_image, gen_kwargs = input_data['input_image'], input_data['gen_kwargs']
     with torch.no_grad():
         answer, history, _ = chat(None, model, tokenizer, input_text, history=history, image=input_image, \
-                            max_length=gen_kwargs['max_length'], top_p=gen_kwargs['top_p'], \
-                            top_k = gen_kwargs['top_k'], temperature=gen_kwargs['temperature'], english=not is_zh)
-        
+                                  max_length=gen_kwargs['max_length'], top_p=gen_kwargs['top_p'], \
+                                  top_k=gen_kwargs['top_k'], temperature=gen_kwargs['temperature'], english=not is_zh)
+
     now = datetime.datetime.now()
     time = now.strftime("%Y-%m-%d %H:%M:%S")
     response = {
