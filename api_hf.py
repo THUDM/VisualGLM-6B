@@ -10,8 +10,9 @@ import torch
 tokenizer = AutoTokenizer.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True)
 model = AutoModel.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True).half().cuda()
 
-
 app = FastAPI()
+
+
 @app.post('/')
 async def visual_glm(request: Request):
     json_post_raw = await request.json()
@@ -23,9 +24,13 @@ async def visual_glm(request: Request):
     history = request_data.get("history")
     image_encoded = request_data.get("image")
     query = request_data.get("text")
-    image_path = process_image(image_encoded)
 
-    with torch.no_grad():    
+    if image_encoded is not None:
+        image_path = process_image(image_encoded)
+    else:
+        image_path = ''
+
+    with torch.no_grad():
         result = model.stream_chat(tokenizer, image_path, query, history=history)
     last_result = None
     for value in result:
@@ -46,4 +51,4 @@ async def visual_glm(request: Request):
 
 
 if __name__ == "__main__":
-   uvicorn.run(app, host='0.0.0.0', port=8080, workers=1)
+    uvicorn.run(app, host='0.0.0.0', port=8080, workers=1)
