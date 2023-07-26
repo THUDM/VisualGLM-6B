@@ -69,6 +69,8 @@ def process_image(text, image=None):
         image: Optional, image path / url / PIL image.
     '''
     image_position = text.rfind("<img>") + 5
+    if image_position < 5:
+        return text, image_position, None
     # extract path from <img></img> using re
     image_path = re.findall(r"<img>(.*?)</img>", text)
     image_path = image_path[-1] if image_path[-1] else None
@@ -100,7 +102,7 @@ def chat(image_path, model, tokenizer,
     if image_path:
         prompt = "<img>{}</img>".format(image_path if image_path else "")
     else:
-        prompt = "<img></img>"
+        prompt = ""
     if english:
         for i, (old_query, response) in enumerate(history):
             prompt += "Q:{}\nA:{}\n".format(old_query, response)
