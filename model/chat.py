@@ -99,7 +99,7 @@ def chat(image_path, model, tokenizer,
         ):
     if not history:
         history = []
-    if image_path:
+    if image_path or image is not None:
         prompt = "<img>{}</img>".format(image_path if image_path else "")
     else:
         prompt = ""
