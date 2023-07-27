@@ -53,6 +53,17 @@ VisualGLM-6B 可以进行图像的描述的相关知识的问答。
 </details>
 
 ## 使用
+通过测试：
+
+CentOS Linux release 7.9.2009 (Core)
+
+NVIDIA Driver Version: 525.105.17
+
+cuda_11.7
+
+cuDNN v8.9.3 (July 11th, 2023), for CUDA 11.x
+
+Python 3.10.12
 
 ### 模型推理
 
