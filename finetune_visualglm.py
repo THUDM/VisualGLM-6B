@@ -16,7 +16,7 @@ class FineTuneVisualGLMModel(VisualGLMModel):
         if args.use_lora:
             self.add_mixin("lora", LoraMixin(args.num_layers, args.lora_rank, layer_range=args.layer_range), reinit=True)
             # self.get_mixin("eva").model.glm_proj = replace_linear_with_lora(self.get_mixin("eva").model.glm_proj, LoraLinear, args.lora_rank)
-        elif args.use_qlora:
+        elif args.use_qlora and args.mode == 'inference':
             self.add_mixin("lora", LoraMixin(args.num_layers, args.lora_rank, layer_range=args.layer_range, qlora=True), reinit=True)
         self.args = args
         
@@ -172,12 +172,10 @@ if __name__ == '__main__':
     known, args_list = py_parser.parse_known_args()
     args = get_args(args_list)
     args = argparse.Namespace(**vars(args), **vars(known))
-    args.device = 'cpu'
+    args.device = 'cuda'
 
     model_type = 'visualglm-6b'
     model, args = FineTuneVisualGLMModel.from_pretrained(model_type, args)
-    if torch.cuda.is_available():
-        model = model.to('cuda')
     tokenizer = get_tokenizer(args)
     label_pad_token_id = -100 if args.ignore_pad_token_for_loss else tokenizer.pad_token_id
     def data_collator(examples):
@@ -191,4 +189,7 @@ if __name__ == '__main__':
             'pre_image': example['pre_image']
         }
         return ret
+    if args.use_qlora:
+        model.add_mixin("lora", LoraMixin(args.num_layers, args.lora_rank, layer_range=args.layer_range, qlora=True), reinit=True)
+        model = model.to('cuda')
     training_main(args, model_cls=model, forward_step_function=forward_step, create_dataset_function=create_dataset_function, collate_fn=data_collator)

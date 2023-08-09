@@ -52,7 +52,7 @@ VisualGLM-6B 可以进行图像的描述的相关知识的问答。
 ![样例](https://github.com/WangRongsheng/XrayGLM/raw/main/assets/images/xrayglm.png)
 </details>
 
-* [StarGLM](https://github.com/WangRongsheng/XrayGLM) 是基于Chat/visualGLM-6B在天文数据集上微调的项目，能回答变星光变曲线相关的信息。
+* [StarGLM](https://github.com/Yu-Yang-Li/StarGLM) 是基于Chat/visualGLM-6B在天文数据集上微调的项目，能回答变星光变曲线相关的信息。
 <details>
 <summary>点击查看样例</summary>
 
