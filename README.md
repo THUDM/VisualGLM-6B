@@ -13,6 +13,9 @@
 🤖<a href="https://huggingface.co/spaces/THUDM/visualglm-6b" target="_blank">VisualGLM-6B在线演示网站</a>
 </p> -->
 
+## News
+[2023.10] 欢迎关注智谱AI新一代多模态对话模型CogVLM（ https://github.com/THUDM/CogVLM ），采用视觉专家新架构，在10项权威经典多模态任务上取得第一名。目前开源CogVLM-17B英文模型，即将基于GLM开源中文模型。
+
 ## 介绍
 
 VisualGLM-6B is an open-source, multi-modal dialog language model that supports **images, Chinese, and English**. The language model is based on [ChatGLM-6B](https://github.com/THUDM/ChatGLM-6B) with 6.2 billion parameters; the image part builds a bridge between the visual model and the language model through the training of [BLIP2-Qformer](https://arxiv.org/abs/2301.12597), with the total model comprising 7.8 billion parameters. **[Click here for English version.](README_en.md)**
