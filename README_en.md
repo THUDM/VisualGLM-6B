@@ -187,12 +187,23 @@ First, you need to install additional dependencies pip install fastapi uvicorn, 
 python api.py
 ```
 The program will automatically download the sat model, and by default it will be deployed on local port 8080 and called through the POST method. Below is an example of a request with curl, but in general you can also use a code method to POST.
+
+1. Image-text chat
+
 ```shell
 echo "{\"image\":\"$(base64 path/to/example.jpg)\",\"text\":\"Describe this picture\",\"history\":[]}" > temp.json
 curl -X POST -H "Content-Type: application/json" -d @temp.json http://127.0.0.1:8080
 ```
 
+2. Text chat
+
+```shell
+echo "{\"image\":\"\",\"text\":\"Hello\",\"history\":[]}" > temp.json
+curl -X POST -H "Content-Type: application/json" -d @temp.json http://127.0.0.1:8080
+```
+
 We also provide an api_hf.py that uses the Huggingface model, which works the same way as the sat model's api:
+
 ```shell
 python api_hf.py
 ```
