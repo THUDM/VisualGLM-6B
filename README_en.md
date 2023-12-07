@@ -21,7 +21,7 @@ VisualGLM-6B is trained using the [SwissArmyTransformer](https://github.com/THUD
 
 However, as VisualGLM-6B is still at the v1 stage, it is known to have quite a few [**limitations**](#Limitations), such as factual inaccuracy/model hallucination in image description, lack of capturing image detail information, and some limitations from the language model. Please be aware of these issues and evaluate the potential risks before using. In future versions of VisualGLM, we will strive to optimize these issues.
 
-With model quantization technology, users can deploy locally on consumer-grade graphics cards (requiring as little as 8.7G memory under INT4 quantization level).
+With model quantization technology, users can deploy locally on consumer-grade graphics cards (requiring as little as 6.3G memory under INT4 quantization level).
 
 ## Examples
 VisualGLM-6B can answer questions related to image description.

@@ -26,7 +26,7 @@ VisualGLM-6B 依靠来自于 [CogView](https://arxiv.org/abs/2105.13290) 数据�
 
 VisualGLM-6B 由 [SwissArmyTransformer](https://github.com/THUDM/SwissArmyTransformer)(简称`sat`) 库训练，这是一个支持Transformer灵活修改、训练的工具库，支持Lora、P-tuning等参数高效微调方法。本项目提供了符合用户习惯的huggingface接口，也提供了基于sat的接口。
 
-结合模型量化技术，用户可以在消费级的显卡上进行本地部署（INT4量化级别下最低只需8.7G显存）。
+结合模型量化技术，用户可以在消费级的显卡上进行本地部署（INT4量化级别下最低只需6.3G显存）。
 
 -----
 
