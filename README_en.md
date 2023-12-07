@@ -209,8 +209,8 @@ model = AutoModel.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True).
 In the sat implementation, you need to change the loading location to 'cpu' first, and then perform quantization. Here's how, see cli_demo.py for details:
 ```python
 from sat.quantization.kernels import quantize
-model = quantize(model.transformer, args.quant).cuda()
-# Specify model.transformer to only quantize ChatGLM, as the error is larger when quantizing ViT
+model = quantize(model, args.quant).cuda()
+# only need 7GB GPU memory to inference
 ```
 
 ## Limitations
