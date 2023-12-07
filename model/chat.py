@@ -116,7 +116,7 @@ def chat(image_path, model, tokenizer,
     # input str, output['input_ids'] = tensor([[tokenized str, gmask, sop]])
     prompt, image_position, torch_image = process_image(prompt, image=image)
     if torch_image is not None:
-        torch_image = torch_image.to(next(model.parameters()).dtype).to(next(model.parameters()).device)
+        torch_image = torch_image.to(torch.float16).to(next(model.parameters()).device)
     if image_position < 5: # no image
         inputs = tokenizer([prompt], return_tensors="pt").to(model.parameters().__next__().device)['input_ids'][0]
         pre_image = 0

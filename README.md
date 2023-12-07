@@ -304,8 +304,8 @@ model = AutoModel.from_pretrained("THUDM/visualglm-6b", trust_remote_code=True).
 在sat实现中，需先传参将加载位置改为`cpu`，再进行量化。方法如下，详见`cli_demo.py`：
 ```python
 from sat.quantization.kernels import quantize
-model = quantize(model.transformer, args.quant).cuda()
-# 指定 model.transformer 只量化 ChatGLM，ViT 量化时误差较大
+quantize(model, args.quant).cuda()
+# 只需要 7GB 显存即可推理
 ```
 
 ## 局限性
