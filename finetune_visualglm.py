@@ -145,9 +145,6 @@ def get_batch(data_iterator, args, timers):
         data = next(data_iterator)
     else:
         data = None
-    # print('#'*50)
-    # print(data)
-    # print('#'*50)
     
     timers('data loader').stop()
     data_b = mpu.broadcast_data(keys, data, datatype)
