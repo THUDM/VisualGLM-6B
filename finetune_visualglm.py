@@ -178,6 +178,7 @@ if __name__ == '__main__':
     model, args = FineTuneVisualGLMModel.from_pretrained(model_type, args)
     if torch.cuda.is_available():
         model = model.to('cuda')
+        args.device = 'cuda'
     tokenizer = get_tokenizer(args)
     label_pad_token_id = -100 if args.ignore_pad_token_for_loss else tokenizer.pad_token_id
     def data_collator(examples):
