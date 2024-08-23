@@ -9,8 +9,8 @@ from sat.model.finetune import PTuningV2Mixin
 from sat.model.finetune.lora2 import LoraMixin
 
 class FineTuneVisualGLMModel(VisualGLMModel):
-    def __init__(self, args, transformer=None, parallel_output=True, **kw_args):
-        super().__init__(args, transformer=transformer, parallel_output=parallel_output, **kw_args)
+    def __init__(self, args, transformer=None, **kw_args):
+        super().__init__(args, transformer=transformer, **kw_args)
         if args.use_ptuning:
             self.add_mixin("ptuning", PTuningV2Mixin(args.num_layers, args.hidden_size // args.num_attention_heads, args.num_attention_heads, args.pre_seq_len))
         if args.use_lora:
