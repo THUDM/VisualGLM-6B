@@ -17,8 +17,8 @@ class LNFinalyMixin(BaseMixin):
         return self.ln_vision(logits)
 
 class EVAViT(ViTModel):
-    def __init__(self, args, transformer=None, parallel_output=True, **kwargs):
-        super().__init__(args, transformer=transformer, parallel_output=parallel_output, **kwargs)
+    def __init__(self, args, transformer=None, **kwargs):
+        super().__init__(args, transformer=transformer, **kwargs)
         self.del_mixin("cls")
         self.add_mixin("cls", LNFinalyMixin(args.hidden_size))
     
@@ -29,8 +29,8 @@ class EVAViT(ViTModel):
         return super().forward(input_ids=input_ids, position_ids=None, attention_mask=attention_mask, image=image)
 
 class QFormer(BaseModel):
-    def __init__(self, args, transformer=None, parallel_output=True, **kwargs):
-        super().__init__(args, transformer=transformer, parallel_output=parallel_output, activation_func=nn.functional.gelu, **kwargs)
+    def __init__(self, args, transformer=None, **kwargs):
+        super().__init__(args, transformer=transformer, activation_func=nn.functional.gelu, **kwargs)
         self.transformer.position_embeddings = None
     
     def final_forward(self, logits, **kw_args):
